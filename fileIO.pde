@@ -58,8 +58,8 @@ class Saver
         }
         catch(Exception e)
         {
-          count=0;
-            filenotfound=true;
+          //count=0;
+           // filenotfound=true;
             
         }
     }

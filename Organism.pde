@@ -1,9 +1,5 @@
-
-import org.json.simple.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-import org.json.simple.parser.JSONParser;
-
 
 //Base params needed to add to organism: stuff like health etc. want to add here to add modularity and avoid hardcoding.
 public final String[] critical_params={};
@@ -56,7 +52,7 @@ class Trait {
     public void enact(Organism o) {
         for (int i=0; i<paramChanges.size(); i++) {
             if (o.parameters.containsKey(paramChanges.get(i).name)) {
-                
+                o.parameters.get(paramChanges.get(i).name).changeBy(paramChanges.get(i));
             }
         }
         //Below is part of code enacting change in organism. this was from loadTrait originally but probably more suitable in here for later.
@@ -101,7 +97,7 @@ class Trait {
         }   
         
         if(!f.exists()){System.err.println("FILE NOT FOUND: mod\\"+folder+","+filename+".json");return; }
-        
+        try {
         pr = new BufferedReader(new FileReader(f));
         
         String t;
@@ -138,6 +134,9 @@ class Trait {
         } catch (Exception e) {
           Logger.getLogger(Organism.class.getName()).log(Level.SEVERE, null, e);
         }
+        } catch (Exception e) {
+          e.printStackTrace(); 
+        }
     }
     public void saveTrait() {
       
@@ -147,8 +146,12 @@ class Parameter {
     Object paramValue;
     String name;
     String dataType;
+    //Used for trait parameters to see if they've already changed another parameter in question.
+    boolean changed=false;
     //Optional. think of this as a "velocity" for the parameter in question (e.g. hpregen for hp etc.)
     Parameter updateParameter;
+    //Optional. If there is a cap value (e.g. for hp or energy) then this is used.
+    Parameter maxParameter;
     
     Parameter(JSONObject obj) {
        loadParameter(obj);
@@ -175,16 +178,53 @@ class Parameter {
           } catch (Exception e) {
               //something with integer casting from string not being viable most likely.
               //not sure how to fix this without annoying switch statements. if necessary add in switch statements.
-             println("waow cannot cast");
+             println("waow cannot cast or find class name");
+             e.printStackTrace();
           }
-          String displayLocation=getStringJSON(obj,"file_not_found","GUI_location");
-          int displayIndex=getIntJSON(obj,0,"GUI_location_index");
+          Boolean hasUpdateParameter=obj.getBoolean("has update parameter");
+          Boolean hasMaxParameter=obj.getBoolean("has max parameter");
+          if (hasUpdateParameter) {
+              
+          }
+          if (hasMaxParameter) {
+            
+          }
+          String displayLocation=obj.getString("gui location","file not found");
+          int displayIndex=obj.getInt("gui location index");
           loadDisplay(displayLocation,displayIndex);
     }
-    void changeParameter(Parameter p) {
-         if (p.dataType==this.dataType) {
+    void changeBy(Parameter p) {
+         if (p.dataType==this.dataType&&!p.changed) {
              //good
+             switch (dataType) {
+                case "int":
+                    paramValue=(Integer)p.paramValue+(Integer)paramValue;
+                    break;
+                case "double":
+                    paramValue=(Double)p.paramValue+(Double)paramValue;
+                    break;
+                case "float":
+                    paramValue=(Float)p.paramValue+(Float)paramValue;
+                    break;
+                case "boolean":
+                    paramValue=(Boolean)p.paramValue;
+                    break;
+                case "string": 
+                    //Default will replace
+                    paramValue=(String)p.paramValue;
+                    break;
+                default:
+                    try {
+                        paramValue=(Class.forName(dataType).cast(p.paramValue));
+                    } catch (Exception e) {
+                       e.printStackTrace(); 
+                    }
+             }
+             p.changed=true;
          }
+    }
+    void update() {
+        
     }
 }
 class Interaction {
@@ -237,7 +277,7 @@ class Interaction {
             f = new File(sysdir+"\\mod\\"+folder+"\\data\\prop\\"+filename+".json");
         }   
          if(!f.exists()){System.err.println("FILE NOT FOUND: mod\\"+folder+","+filename+".json");return; }
-         
+         try {
        BufferedReader br=new BufferedReader(new FileReader(f));
        //Get trait 1 and trait 2 indices to load
        String t;
@@ -263,6 +303,10 @@ class Interaction {
             removeEffect.add(((JSONObject) effectTraits.get(i)).getBoolean("trait remove"));
             effect.add(new Trait(traitfilename,index));
         }
+         } catch (Exception e) {
+            e.printStackTrace(); 
+           
+         }
    }
 }
 class Ability {
