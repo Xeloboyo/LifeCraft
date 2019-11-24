@@ -149,6 +149,10 @@ class Interaction {
 }
 class Ability {
       Ability () {
+<<<<<<< Updated upstream
           //Contains animations, 
+=======
+          //Contains 
+>>>>>>> Stashed changes
       }
 }
