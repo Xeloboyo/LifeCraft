@@ -64,3 +64,32 @@ class Saver
         }
     }
 }
+private static int getIntJSON(JSONObject o, int defaultvalue, String key){
+        Object ob = o.get(key);
+        if(ob!=null){
+            return (int)((long)ob);
+        }
+        return defaultvalue;
+    }
+    private static float getFloatJSON(JSONObject o, float defaultvalue, String key){
+        Object ob = o.get(key);
+        if(ob!=null){
+            return (float)(double)ob;
+        }
+        return defaultvalue;
+    }
+    private static String getStringJSON(JSONObject o, String defaultvalue, String key){
+        Object ob = o.get(key);
+        if(ob!=null){
+            return (String)ob;
+        }
+        return defaultvalue;
+    }
+    private static boolean getBooleanJSON(JSONObject o, boolean defaultvalue, String key){
+        Object ob = o.get(key);
+        if(ob!=null){
+            return (boolean)ob;
+        }
+        return defaultvalue;
+    }
+    public static String sysdir=System.getProperty("user.dir");
