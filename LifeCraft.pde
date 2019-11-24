@@ -31,6 +31,12 @@ void setup(){
   tileBatch.addSprite("forest",tiles.get(32,64,32,32));
   //  ortho();
   ((PGraphicsOpenGL)g).textureSampling(2);
+  
+  
+  
+  Program p = new Program("x = 9\n PRINT(x)");
+  p.runCycle();
+  
 }
 
 

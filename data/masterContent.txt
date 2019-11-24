@@ -56,9 +56,10 @@
 	},
 	"TerrainType_9":{
 		"name": "arid dirt",
-		"red": 30,
-		"green": 100,
-		"blue": 40
+		"red": 150,
+		"green": 140,
+		"blue": 120
 	},
+	
 	
 }

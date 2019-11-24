@@ -357,7 +357,9 @@ class Interaction {
             JSONWHOLE=JSONWHOLE.concat(t+"\n");
         } 
         JSONObject all = parseJSONObject(JSONWHOLE);
+        
         JSONArray interactions = parseJSONArray("interactions");
+        
         JSONObject interaction = (JSONObject) interactions.get(index);
         name=interaction.getString("name");
         JSONArray interactionTraitReqs=(JSONArray) parseJSONArray(name+" trait reqs");
