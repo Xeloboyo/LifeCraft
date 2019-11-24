@@ -20,7 +20,7 @@ String folder="main";
 JSONObject masterobj;
 HashMap<String,TerrainType> terrainTypes = new HashMap();
 
-
+long time=0;
 
 class TerrainType{
   color c;
