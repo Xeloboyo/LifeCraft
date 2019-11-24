@@ -82,7 +82,8 @@ class Trait {
         BufferedReader pr;
      
         if(folder.equals("main")){
-            f = dataFile("/prop/"+filename+".json");
+            println(sysdir+""+filename+".json");
+            f = new File(sysdir+""+filename+".json");
 
         }else {
             f = new File(sysdir+"\\mod\\"+folder+"\\data\\prop\\"+filename+".json");
@@ -100,9 +101,8 @@ class Trait {
             JSONWHOLE=JSONWHOLE.concat(t+"\n");
         } 
         System.out.println(JSONWHOLE);
-        JSONObject all = parseJSONObject(JSONWHOLE);
+        //JSONObject all = parseJSONObject(JSONWHOLE);
         JSONArray traiters = parseJSONArray("traits");
-
         JSONObject trait= (JSONObject) traiters.get(index);
         
            String name = getStringJSON(trait, "name_not_found", "name");
@@ -298,7 +298,9 @@ class Interaction {
    //This class details the interactions between two traits. skeleton for later
    String name;
    ArrayList<Trait> interactingTraits=new ArrayList();
+   //Used to determine whether an interaction is more likely to occur based on certain interacting values.
    HashMap<Parameter,Object> paramInteractingValues=new HashMap();
+   ArrayList <Boolean> overOrUnder=new ArrayList();
    //useful for example if an effect occurs upon the presence of one trait and absence of another.
    //If true, then the absence of that trait confers a modifier.
    ArrayList<Boolean> traitAbsenceReq=new ArrayList();
@@ -341,7 +343,7 @@ class Interaction {
    public void load() {
        File f; 
        if(folder.equals("main")){
-            f = new File(sysdir+"\\data\\prop\\"+filename+".json");
+            f = new File(sysdir+"\\data\\prop"+filename+".json");
         }else {
             f = new File(sysdir+"\\mod\\"+folder+"\\data\\prop\\"+filename+".json");
         }   

@@ -21,6 +21,8 @@ JSONObject masterobj;
 HashMap<String,TerrainType> terrainTypes = new HashMap();
 
 long time=0;
+//Every 
+int suncycle=12000;
 
 class TerrainType{
   color c;
@@ -345,6 +347,10 @@ float toal = 0.0,toal2=0.0;
 PImage output;
 PeasyCam p;
 void setup(){
+  System.setProperty("user.dir","C:\\Users\\Maks\\Documents\\GitHub\\LifeCraft" );
+  sysdir=System.getProperty("user.dir");
+  Trait test=new Trait("\\data\\traits",0);
+  println(test.name);
   for (int i=-3; i<=3; i++){for (int j=-3; j<=3; j++){toal+=1f/(dist(i,j,0,0)+0.5);}}
   for (int i=-1; i<=1; i++){for (int j=-1; j<=1; j++){toal2+=1f/(dist(i,j,0,0)+0.2);}}
   masterobj = parseJSONObject(fileToString("masterContent.txt"));
