@@ -1,11 +1,45 @@
 import peasy.*;
 import peasy.org.apache.commons.math.*;
 import peasy.org.apache.commons.math.geometry.*;
+float toal = 0.0,toal2=0.0;
+PImage output;
+PeasyCam p;
+SpriteBatch tileBatch;
+void setup(){
+  for (int i=-3; i<=3; i++){for (int j=-3; j<=3; j++){toal+=1f/(dist(i,j,0,0)+0.5);}}
+  for (int i=-1; i<=1; i++){for (int j=-1; j<=1; j++){toal2+=1f/(dist(i,j,0,0)+0.2);}}
+  masterobj = parseJSONObject(fileToString("masterContent.txt"));
+  int types = masterobj.getInt("terrainTypes");
+  for(int i = 0;i<types;i++){
+    JSONObject ttype = masterobj.getJSONObject("TerrainType_"+i);
+    terrainTypes.put(ttype.getString("name"),new TerrainType(ttype));
+  }
+  generate(400,200);
+  size(1000,500,P2D);
+  output = terrainToImage();
+  p  = new PeasyCam(this, 400);
+  tiles = loadImage("tiles.png");
+  tileBatch = new SpriteBatch(20000);
+  tileBatch.addSprite("dirt",tiles.get(32,32,32,32));
+  tileBatch.addSprite("grass",tiles.get(0,0,32,32));
+  tileBatch.addSprite("sand",tiles.get(0,32,32,32));
+  tileBatch.addSprite("arid dirt",tiles.get(64,0,32,32));
+  tileBatch.addSprite("rock",tiles.get(32,0,32,32));
+
+  tileBatch.addSprite("snow",tiles.get(64,32,32,32));
+  tileBatch.addSprite("water",tiles.get(0,64,32,32));
+  tileBatch.addSprite("forest",tiles.get(32,64,32,32));
+  //  ortho();
+  ((PGraphicsOpenGL)g).textureSampling(2);
+}
+
+
+
 
 TerrainTile [][] land;
 int w,h;
-float scale = 70,chaos, ruggedness = 2, biomeoffset;
-float dryness = 0.35;
+float scale = 70,chaos, ruggedness = 3, biomeoffset;
+float dryness = 0.25;
 
 int seed1=0;
 int seed2=0;
@@ -19,6 +53,9 @@ String folder="main";
 
 JSONObject masterobj;
 HashMap<String,TerrainType> terrainTypes = new HashMap();
+
+PImage tiles;
+
 
 
 
@@ -36,13 +73,17 @@ class TerrainTile{
   float height;
   float moisture;
   float soilcover;
-  TerrainTile(TerrainType init, int x,int y, float height,float moisture,float soilcover){
+  int variant;
+  float temp;
+  TerrainTile(TerrainType init, int x,int y, float height,float moisture,float soilcover,float temp, int variant){
      tp = init;
     this.x=x;
     this.y=y;
     this.height=height;
     this.moisture = moisture;
     this.soilcover = soilcover;
+    this.variant =variant;
+    this.temp=temp;
   }
   
   float getDisplayHeight(){
@@ -58,30 +99,46 @@ class TerrainTile{
     if(tp.name.equals("sand")&&height>30){
       tp = terrainTypes.get("rock");
     }
+    
+    if(tp.name.equals("sand")&&moisture>0.3){
+      moisture-=0.2;
+      tp = terrainTypes.get("arid dirt");
+    }
+    if(tp.name.equals("water") && (moisture<0.3)){
+      tp = terrainTypes.get("dirt");
+    }
     if(tp.name.equals("sand") && (soilcover>10)){
       tp = terrainTypes.get("dirt");
     }
     
     if(tp.name.equals("dirt") &&(moisture<0.05)){
-      tp = terrainTypes.get("sand");
+      tp = terrainTypes.get("arid dirt");
+    }
+    if(tp.name.equals("arid dirt") &&(moisture>0.08)){
+      tp = terrainTypes.get("dirt");
     }
     if(moisture>0.3){
       tp = terrainTypes.get("water");
-      if(height>20){
+      if(temp<0){
         tp = terrainTypes.get("ice");
       }
     }else if(moisture>0.2){
-      if(height>30){
+      if(temp<0){
         tp = terrainTypes.get("snow");
       }
       
     }
     
-    if(tp.name.equals("grass") && moisture<0.2&&moisture>0.1&&soilcover>5){
+    if(tp.name.equals("grass") && moisture<0.2&&moisture>0.1&&soilcover>5&&temp>0&&temp<30){
       tp = terrainTypes.get("forest");
     }
     
-    if(moisture>0.05){
+    if(tp.name.equals("grass") && (moisture<0.04||temp<0||temp>40)){
+      tp = terrainTypes.get("arid dirt");
+      moisture+=0.05;
+    }
+    
+    if(moisture>0.05&&temp>0){
       if(tp.name.equals("dirt")){
         tp = terrainTypes.get("grass");
       }
@@ -137,15 +194,25 @@ void generate(int w,int h){
             //}
            
             /// height is mapped from 0 to 1.
+            
+            
+            
             float height = ((pow(noise(i*(1.0/scale)+0.93,0.2+j*(1.0/scale)),4) )*ruggedness )*50+10 + 5*(noise(i*0.1/scale,j*0.1/scale))*(noise(i*(10.0/scale)+0.93,0.2+j*(10.0/scale))-0.5);
+            
+            float temperature = noise(i*(1.0/scale)-4.33,-3.5+j*(1.0/scale))*30.3 - (height-10)*0.6;
+            
+            
             float moisture = max(0,noise(i*(1.0/scale)-0.33,0.5+j*(1.0/scale)) -  dryness - ((height-10)*0.003*noise(i*0.3/scale+0.6,j*0.3/scale)));
             float soilcover = max(0,noise(i*(1.0/scale)-0.33,-0.5+j*(1.0/scale))*20.3 - (height-10)*0.4);
-            land[i][j]=new TerrainTile(new TerrainType(masterobj.getJSONObject("TerrainType_"+at)),i,j, height,  moisture, soilcover);
+            
+            
+            
+            land[i][j]=new TerrainTile(new TerrainType(masterobj.getJSONObject("TerrainType_"+at)),i,j, height,  moisture, soilcover,temperature,(int)random(20));
             
         }
     }
     //stabilising water & large scale erosion
-    int steps = 1;
+    int steps = 300;
     
     println("stablising water");
     for (int z=0; z<steps; z++){
@@ -341,24 +408,8 @@ void settleWater(){
 }
 
 
-float toal = 0.0,toal2=0.0;
-PImage output;
-PeasyCam p;
-void setup(){
-  for (int i=-3; i<=3; i++){for (int j=-3; j<=3; j++){toal+=1f/(dist(i,j,0,0)+0.5);}}
-  for (int i=-1; i<=1; i++){for (int j=-1; j<=1; j++){toal2+=1f/(dist(i,j,0,0)+0.2);}}
-  masterobj = parseJSONObject(fileToString("masterContent.txt"));
-  int types = masterobj.getInt("terrainTypes");
-  for(int i = 0;i<types;i++){
-    JSONObject ttype = masterobj.getJSONObject("TerrainType_"+i);
-    terrainTypes.put(ttype.getString("name"),new TerrainType(ttype));
-  }
-  generate(400,200);
-  size(1000,500,P3D);
-  output = terrainToImage();
-  p  = new PeasyCam(this, 400);
-  //  ortho();
-}
+
+
 
 
 PImage terrainToImage(){
@@ -377,35 +428,112 @@ PImage terrainToImage(){
   return pg;
 }
 
+float cameraX,cameraY;
+float camvx = 0,avx=0;
+float camvy = 0,avy=0;
+float zoom = 0.3;
+
+float screenToWorldX(float sx){
+  return sx/zoom+cameraX;
+}
+float screenToWorldY(float sy){
+  return sy/zoom+cameraY;
+}
+
+void keyPressed(){
+
+  if(key=='a'){
+    camvx-=100;
+  }
+  else if(key=='d'){
+    camvx+=100;
+  }
+  if(key=='w'){
+    camvy=-100;
+  }
+  else if(key=='s'){
+    camvy+=100;
+  }
+}
+
+void keyReleased(){
+  
+  if(key=='a'){
+    camvx+=100;
+  }
+  else if(key=='d'){
+    camvx-=100;
+  }
+  
+  if(key=='w'){
+    camvy+=100;
+  }
+  else if(key=='s'){
+    camvy-=100;
+  }
+  
+  
+}
+
+void mouseWheel(MouseEvent event) {
+
+  float e = event.getCount();
+  float scalechange = (e<0)?1.1:0.9;
+   
+  if(zoom*scalechange<0.2){
+    scalechange =1.0;
+    zoom=0.2;
+  }zoom*=scalechange;
+  cameraX += (mouseX/zoom)*(scalechange-1.0);
+  cameraY += (mouseY/zoom)*(scalechange-1.0);
+  //ghandler.onMouseWheel(event.getCount());
+}
+
+
 void draw(){
   background(200);
   //image(output,0,0);
-  for(int i =0 ;i<5;i++){
-    settleWater();
-  }
+  
+  
+  cameraX +=avx;
+  cameraY+=avy;
+  
+  avx += (camvx-avx)*0.1;
+  avy += (camvy-avy)*0.1;
   
   
   reassignAll();
   //output = terrainToImage();
   noStroke();
-  scale(3.0);
-  translate(-w/2,-h/2);
-  directionalLight(255,255,255, -1, 1, -0.5);
-  //directionalLight(255,255,255, -1, 1, -0.52);
-  ambientLight(40,100,130);
-  beginShape(QUADS);
+  pushMatrix();
+  scale(zoom);
+  translate(-cameraX,-cameraY);
   
-  for (int i=0; i<land.length-1; i++)
+  
+  TerrainTile t = getTile(screenToWorldX(mouseX)/32,screenToWorldY(mouseY)/32);
+  
+  //beginShape(QUADS);
+  tileBatch.reset();
+  for (int i=constrain(floor(screenToWorldX(0)/32),0,w-1); i<constrain(floor(screenToWorldX(width+32)/32),0,w-1); i++)
   {
-    for (int j=0; j<land[i].length-1; j++)
+    for (int j=constrain(floor(screenToWorldY(0)/32),0,h-1); j<constrain(floor(screenToWorldY(height+32)/32),0,h-1); j++)
       
     {
-      fill(lerpColor(land[i][j].tp.c,color(0,0,30),(1.0-0.05*land[i][j].height)));
-      vertex(i,j,land[i][j].getDisplayHeight());
-      vertex(i+1,j,land[i+1][j].getDisplayHeight());
-      vertex(i+1,1+j,land[i+1][j+1].getDisplayHeight());
-      vertex(i,1+j,land[i][j+1].getDisplayHeight());
+      color c= lerpColor(color(255),color(0,0,30),(1.0-0.05*land[i][j].height));
+      if(land[i][j]==t){
+        c = #FF0000;
+      }
+      tileBatch.addDrawOrder(land[i][j].tp.name,i*32,j*32,32,32,c);
     }
   }
-  endShape();
+  //endShape();
+  tileBatch.draw(g);
+  popMatrix();
+  
+  fill(255);
+  text(t.tp.name,20,20);
+  text("moisture:"+t.moisture,20,40);
+  text("soil:"+t.soilcover,20,60);
+  text("height:"+t.height,20,80);
+  text("temp:"+t.temp,20,100);
 }

@@ -93,6 +93,9 @@ class SpriteBatch{
   }
   
   void addDrawOrder(String sprite,int x,int y){
+    if(!altasids.hasKey(sprite)){
+      return;
+    }
     queue[csize][0] = altasids.get(sprite);
     queue[csize][1] = x;
     queue[csize][2] = y;
@@ -111,6 +114,9 @@ class SpriteBatch{
     csize++;
   }
   void addDrawOrder(String sprite,int x,int y,int w,int h,int col){
+    if(!altasids.hasKey(sprite)){
+      return;
+    }
     queue[csize][0] = altasids.get(sprite);
     queue[csize][1] = x;
     queue[csize][2] = y;

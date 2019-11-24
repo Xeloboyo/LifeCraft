@@ -12,7 +12,6 @@ class Organism {
     JSONObject species; 
     String filename;
     int evopoints;
-    HashMap <String, Object> parameters;
     //If goes to zero creature dies.
     
     //Traits/body parts determine how the thing works: the specific trait
@@ -241,7 +240,7 @@ class Interaction {
             f = new File(sysdir+"\\mod\\"+folder+"\\data\\prop\\"+filename+".json");
         }   
          if(!f.exists()){System.err.println("FILE NOT FOUND: mod\\"+folder+","+filename+".json");return; }
-         
+        try{ 
        BufferedReader br=new BufferedReader(new FileReader(f));
        //Get trait 1 and trait 2 indices to load
        String t;
@@ -267,6 +266,7 @@ class Interaction {
             removeEffect.add(((JSONObject) effectTraits.get(i)).getBoolean("trait remove"));
             effect.add(new Trait(traitfilename,index));
         }
+        }catch(Exception e){}
    }
 }
 class Ability {

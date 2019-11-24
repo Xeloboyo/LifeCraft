@@ -1,5 +1,5 @@
 {
-	"terrainTypes":9,
+	"terrainTypes":10,
 	"TerrainType_0":{
 		"name": "dirt",
 		"red": 150,
@@ -50,6 +50,12 @@
 	},
 	"TerrainType_8":{
 		"name": "forest",
+		"red": 30,
+		"green": 100,
+		"blue": 40
+	},
+	"TerrainType_9":{
+		"name": "arid dirt",
 		"red": 30,
 		"green": 100,
 		"blue": 40
