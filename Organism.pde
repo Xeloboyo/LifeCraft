@@ -1,3 +1,4 @@
+
 import org.json.simple.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -11,6 +12,12 @@ class Organism {
     //Records all changeable parameters (e.g. vision range, movement speed etc.).
     //Put in hashmap to allow addition and changing of parameters
     HashMap <String, Object> parameters;
+class Organism {
+    //This will be the base starting species
+    JSONObject species; 
+    String filename;
+    int evopoints;
+    
     //If goes to zero creature dies.
     float energy;
     final float MAX_ENERGY=100f;
@@ -149,10 +156,12 @@ class Interaction {
 }
 class Ability {
       Ability () {
-<<<<<<< Updated upstream
           //Contains animations, 
-=======
           //Contains 
->>>>>>> Stashed changes
       }
+    //Exclusively for active abilities
+    public float cooldown; 
+    public void enact(Organism o) {
+        
+    }   
 }
