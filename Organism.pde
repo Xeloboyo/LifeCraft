@@ -46,7 +46,7 @@ class Trait {
     public boolean activated;
     public int index;
     public String filename;
-    ArrayList < Parameter> paramChanges=new ArrayList();
+    ArrayList < Parameter> paramChanges=new ArrayList(); 
     //This is to indicate whether a particular trait is temporary, and is useful for effects on organisms such as injury, being on fire or famine.
     boolean isModifier; 
     Trait(String filename, int index) {
