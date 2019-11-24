@@ -1,0 +1,116 @@
+{ 
+	"traits": [
+	{	"name": "Alive", 
+		"desc": "Being alive is generally a nice feeling.",
+		"has abilities": false,
+		"parameters": [
+			{
+				"name": "Health",
+				"desc": "The overall health of a creature. When this reaches zero, the creature dies. Affected by a number of conditions.",
+				"data type": "Float",
+				"value": 100f,
+				"has update parameter": true,
+				"has max parameter": true,
+				"has gui": false,
+				"update tick": 60,
+				"update parameter": {
+					"name": "Health Regen",
+					"desc": "The change of health for a creature over time. Changes once every 60 ticks. Influenced by a number of conditions, such as combat or injury."
+					"data type": "Float",
+					"value": 0.1f,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false
+				},
+				"max parameter": {
+					"name": "Max Health",
+					"desc": "How much a creature can handle before succumbing to death.",
+					"data type": "Float",
+					"value": 100f,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false
+					
+				}
+			}, 
+			{
+				"name": "Energy",
+				"desc": "How much energy a creature currently has to go about its daily activities",
+				"data type": "Float",
+				"value": 100f,
+				"has update parameter": true,
+				"has max parameter": true,
+				"has gui": false,
+				"update tick": 60,
+				"update parameter": {
+					"name": "Energy Regen",
+					"desc": "The change of energy for a creature over time. Changes once every 60 ticks. Influenced by a number of conditions, such as combat or injury. A severe lack of energy will lead to a decrease in health"
+					"data type": "Float",
+					"value": -0.1f,
+					
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false
+				},
+				"max parameter": {
+					"name": "Max Health",
+					"desc": "The maximum a creature can achieve without eating or sleeping",
+					"data type": "Float",
+					"value": 100f,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false
+					
+				}
+			},
+			{
+				"name":"Age",
+				"desc":"The older, the wiser",
+				"data type": "Integer",
+				"value":0,
+				"has update parameter": true,
+				"has max parameter": false,
+				"has gui": false,
+				"update tick": 10000,
+				"update parameter": {
+					"name": "Growth and aging",
+					"desc": "This creature is slowly growing."
+					"data type": "Float",
+					"value": 1,
+					
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false
+				}
+			}
+		]
+	},
+	{	
+		"name": "Undead",
+		"desc": "This creature is a member of the undead."	
+		"has abilities": true,
+		"parameters": [
+			{	
+				"name": "Sustenance",
+				"desc": "To survive, the undead must look to the living.",
+				"data type": "Float",
+				"value": 50f,
+				"has update parameter": true,
+				"has max parameter": false,
+				"has gui": false,
+				"update parameter": {
+					"name": "Sustenance decay",
+					"desc": "The undead swiftly decay without a source of sustenance."
+					"data type": "Float",
+					"value": -0.3f,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false
+				}
+			
+		],"abilities": [
+			
+		]
+	}
+	]
+}

@@ -54,9 +54,10 @@ String folder="main";
 JSONObject masterobj;
 HashMap<String,TerrainType> terrainTypes = new HashMap();
 
+
 PImage tiles;
 
-
+long time=0;
 
 
 class TerrainType{
