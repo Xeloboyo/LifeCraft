@@ -13,7 +13,6 @@ class Organism {
     JSONObject species; 
     String filename;
     int evopoints;
-    HashMap <String, Object> parameters;
     //If goes to zero creature dies.
     
     //Traits/body parts determine how the thing works: the specific trait
