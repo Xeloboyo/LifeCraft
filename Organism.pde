@@ -3,15 +3,7 @@ import org.json.simple.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import org.json.simple.parser.JSONParser;
-class Organism {
-    //This will be the base starting species
-    //Contains base parameters of species etc. 
-    JSONObject species; 
-    String filename;
-    int evopoints;
-    //Records all changeable parameters (e.g. vision range, movement speed etc.).
-    //Put in hashmap to allow addition and changing of parameters
-    HashMap <String, Object> parameters;
+
 class Organism {
     //This will be the base starting species
     JSONObject species; 
@@ -92,12 +84,12 @@ abstract class Trait {
         File f;
         BufferedReader pr;
         if(folder.equals("main")){
-            f = new File(sysdir+"\\data\\prop\\"+bname+".json");
+            f = new File(sysdir+"\\data\\prop\\"+filename+".json");
         }else {
-            f = new File(sysdir+"\\mod\\"+folder+"\\data\\prop\\"+bname+".json");
+            f = new File(sysdir+"\\mod\\"+folder+"\\data\\prop\\"+filename+".json");
         }   
         
-        if(!f.exists()){System.err.println("FILE NOT FOUND: mod\\"+folder+","+bname+".json");return; }
+        if(!f.exists()){System.err.println("FILE NOT FOUND: mod\\"+folder+","+filename+".json");return; }
         
         pr = new BufferedReader(new FileReader(f));
         
@@ -107,11 +99,9 @@ abstract class Trait {
             JSONWHOLE=JSONWHOLE.concat(t+"\n");
         } 
         System.out.println(JSONWHOLE);
-        JSONParser jp = new JSONParser();
-        JSONObject all = (JSONObject)jp.parse(JSONWHOLE);
-        JSONArray traiters = (JSONArray)all.get("traits");
+        JSONObject all = parseJSONObject(JSONWHOLE);
+        JSONArray traiters = parseJSONArray("traits");
         JSONObject trait= (JSONObject) traiters.get(index);
-        BufferedReader pr=null;
         try {
            String name = getStringJSON(trait, "name_not_found", "name");
            Boolean hasAbilities= getBooleanJSON(trait, false, "hasAbilities");
@@ -142,6 +132,8 @@ abstract class Trait {
               }
               paramChanges.put(paramName, paramDataType);
            }
+           //Compatible Trait + Interaction loading
+           
         } catch (Exception e) {
           Logger.getLogger(Organism.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -152,12 +144,14 @@ abstract class Trait {
 }
 class Interaction {
    //This class details the interactions between two traits. skeleton for later
-   
+   Trait t1;
+   Trait t2;
+   Trait effectOft2ont1;
+   Trait effectOft1ont2;
 }
 class Ability {
       Ability () {
           //Contains animations, 
-          //Contains 
       }
     //Exclusively for active abilities
     public float cooldown; 
