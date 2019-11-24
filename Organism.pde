@@ -106,7 +106,7 @@ class Trait {
         if(!f.exists()){System.err.println("FILE NOT FOUND: mod\\"+folder+","+filename+".json");return; }
 
         
-       
+        try {
         try {
            pr = new BufferedReader(new FileReader(f));
         String t;
