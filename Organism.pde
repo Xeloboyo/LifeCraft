@@ -33,9 +33,6 @@ class Organism {
     public void update(){
        
     }
-    public void updateBehavior() {
-      
-    }
 }
 
 class Trait {
@@ -48,7 +45,7 @@ class Trait {
     public boolean activated;
     public int index;
     public String filename;
-    ArrayList <Parameter> paramChanges;
+    ArrayList < Parameter> paramChanges;
     //This is to indicate whether a particular trait is temporary, and is useful for effects on organisms such as injury, being on fire or famine.
     boolean isModifier; 
     Trait(String filename, int index) {
@@ -58,7 +55,9 @@ class Trait {
     }
     public void enact(Organism o) {
         for (int i=0; i<paramChanges.size(); i++) {
-            
+            if (o.parameters.containsKey(paramChanges.get(i).name)) {
+                
+            }
         }
         //Below is part of code enacting change in organism. this was from loadTrait originally but probably more suitable in here for later.
         /*if (!o.parameters.containsKey(paramName)) {
@@ -132,7 +131,7 @@ class Trait {
            for (int i=0; i< parameters.size(); i++) {
               //Recommended: use _change to indicate that an already existing parameter is to be changed. 
               Parameter p=new Parameter((JSONObject)parameters.get(i));
-              paramChanges.put(p.name, p);
+              paramChanges.add(p);
            }
            //Compatible Trait loading
            
@@ -148,7 +147,7 @@ class Parameter {
     Object paramValue;
     String name;
     String dataType;
-    //Optional
+    //Optional. think of this as a "velocity" for the parameter in question (e.g. hpregen for hp etc.)
     Parameter updateParameter;
     
     Parameter(JSONObject obj) {
@@ -181,6 +180,11 @@ class Parameter {
           String displayLocation=getStringJSON(obj,"file_not_found","GUI_location");
           int displayIndex=getIntJSON(obj,0,"GUI_location_index");
           loadDisplay(displayLocation,displayIndex);
+    }
+    void changeParameter(Parameter p) {
+         if (p.dataType==this.dataType) {
+             //good
+         }
     }
 }
 class Interaction {
