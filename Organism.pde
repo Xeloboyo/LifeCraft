@@ -46,7 +46,7 @@ class Trait {
     public boolean activated;
     public int index;
     public String filename;
-    ArrayList < Parameter> paramChanges;
+    ArrayList < Parameter> paramChanges=new ArrayList();
     //This is to indicate whether a particular trait is temporary, and is useful for effects on organisms such as injury, being on fire or famine.
     boolean isModifier; 
     Trait(String filename, int index) {
@@ -101,9 +101,9 @@ class Trait {
             JSONWHOLE=JSONWHOLE.concat(t+"\n");
         } 
         System.out.println(JSONWHOLE);
-        //JSONObject all = parseJSONObject(JSONWHOLE);
-        JSONArray traiters = parseJSONArray("traits");
-        JSONObject trait= (JSONObject) traiters.get(index);
+        JSONObject all = parseJSONObject(JSONWHOLE);
+        JSONArray traiters = all.getJSONArray("traits");
+        JSONObject trait= traiters.getJSONObject(index);
         
            String name = getStringJSON(trait, "name_not_found", "name");
            String desc= getStringJSON(trait, "desc_not_found", "desc");
@@ -119,7 +119,7 @@ class Trait {
              }
            }
            //Parameter loading
-           JSONArray parameters = (JSONArray) trait.get("parameters");
+           JSONArray parameters = (JSONArray) trait.getJSONArray("parameters");
            for (int i=0; i< parameters.size(); i++) {
               //Recommended: use _change to indicate that an already existing parameter is to be changed. 
               Parameter p=new Parameter((JSONObject)parameters.get(i));
@@ -176,7 +176,27 @@ class Parameter {
           String parameterValueChange=getStringJSON(obj,"0","value");
           dataType=paramDataType;
           try {
-              paramValue=Class.forName(paramDataType).cast(parameterValueChange);
+              switch (dataType) {
+                case "Integer":
+                    paramValue=Integer.parseInt(parameterValueChange);
+                    break;
+                case "Double":
+                    paramValue=Double.parseDouble(parameterValueChange);
+                    break;
+                case "Float":
+                    paramValue=Float.parseFloat(parameterValueChange);
+                    break;
+                case "Boolean":
+                    paramValue=Boolean.parseBoolean(parameterValueChange);
+                    break;
+                case "String": 
+                    //Default will replace
+                    paramValue=(String)paramValue;
+                    break;
+                default:
+                    
+                    break;
+             }
           } catch (Exception e) {
               //something with integer casting from string not being viable most likely.
               //not sure how to fix this without annoying switch statements. if necessary add in switch statements.
