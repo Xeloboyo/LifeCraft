@@ -1,6 +1,10 @@
+import peasy.*;
+import peasy.org.apache.commons.math.*;
+import peasy.org.apache.commons.math.geometry.*;
+
 TerrainTile [][] land;
 int w,h;
-float scale = 30,chaos, ruggedness = 1.2, biomeoffset;
+float scale = 50,chaos, ruggedness = 1.2, biomeoffset;
 float dryness = 0.35;
 
 int seed1=0;
@@ -40,7 +44,9 @@ class TerrainTile{
     this.soilcover = soilcover;
   }
   
-  
+  float getDisplayHeight(){
+    return height+moisture;
+  }
   void assignToType(){
     if(tp.name.equals("dirt") && soilcover<0.02){
       tp = terrainTypes.get("rock");
@@ -52,16 +58,16 @@ class TerrainTile{
     if(tp.name.equals("sand") && soilcover>0.1){
       tp = terrainTypes.get("dirt");
     }
-    if(moisture>0.5){
+    if(moisture>0.3){
       tp = terrainTypes.get("water");
-    }else if(moisture>0.4){
+    }else if(moisture>0.2){
       if(height>0.7){
         tp = terrainTypes.get("snow");
       }
       
     }
     
-    if(moisture>0.1){
+    if(moisture>0.05){
       if(tp.name.equals("dirt")){
         tp = terrainTypes.get("grass");
       }
@@ -117,9 +123,9 @@ void generate(int w,int h){
             //}
            
             /// height is mapped from 0 to 1.
-            float height = (noise(i*(1.0/scale)+0.93,0.2+j*(1.0/scale)) - 0.5)*ruggedness +0.5;
+            float height = ((noise(i*(1.0/scale)+0.93,0.2+j*(1.0/scale)) - 0.5)*ruggedness +0.5)*50;
             float moisture = max(0,noise(i*(1.0/scale)-0.33,0.5+j*(1.0/scale)) -  dryness);
-            float soilcover = noise(i*(1.0/scale)-0.33,-0.5+j*(1.0/scale))*0.3;
+            float soilcover = noise(i*(1.0/scale)-0.33,-0.5+j*(1.0/scale))*20.3;
             land[i][j]=new TerrainTile(new TerrainType(masterobj.getJSONObject("TerrainType_"+at)),i,j, height,  moisture, soilcover);
             
         }
@@ -146,55 +152,59 @@ void reassignAll(){
 void erode(){
   int steps = 50;
   float px = random(w),py = random(h);
-  float water=0.3;
+  float water=50;
   float speed =0;
   float vx=0,vy=0;
   float soil = 0.0;
+  float net=0;
+  float pheight = getTile(px-1,py).height * (1 - px%1) * (1 - py%1) +getTile(px+1,py).height * px%1 * (1 - py%1) + getTile(px-1,py+1).height * (1 - px%1) * py%1 + getTile(px+1,py+1).height * px%1 * py%1;
   for (int z=0; z<steps; z++){
     float xdir = getTile(px+1,py).height - getTile(px-1,py).height;
     float ydir =  getTile(px,py+1).height - getTile(px,py-1).height;
     
     speed = dist(0,0,vx,vy)+0.001;
-    float cap = speed*0.1+water;
+   
     TerrainTile tt  = getTile(px,py);
      px-=vx/speed;
     py-=vy/speed;
-    float dheight = getTile(px,py).height - tt.height;
+    float nheight = getTile(px-1,py).height * (1 - px%1) * (1 - py%1) +getTile(px+1,py).height * px%1 * (1 - py%1) + getTile(px-1,py+1).height * (1 - px%1) * py%1 + getTile(px+1,py+1).height * px%1 * py%1;
+    float dheight = nheight - pheight ;
+    pheight=nheight;
+     float cap = max(dheight*speed*water*0.2,0.5);;
+    if(dheight>0){
+      speed-=dheight;
+    }
     if(soil>cap || dheight>0){
-      
-      float soildep = soil*0.2*(dheight>0?min(1.0,dheight*4.0):1.0);
-      for (int i=-1; i<=1; i++)
-      {
-        for (int j=-1; j<=1; j++)
-        {
-          float t = dist(i,j,0,0)+1.0;
-          t=1f/t;
-          getTile(px+i,py+j).soilcover +=soildep*t/toal;
-           getTile(px+i,py+j).height += soildep*t/toal;
-        }
-      }
+      //println(soil,cap);
+      float soildep = soil*0.01*(dheight>0?min(1.0,dheight*0.01):1.0);
+      tt.soilcover +=soildep;
+     tt.height += soildep;
+     net+=soildep;
      
       soil -=soildep;
+      
     }
     //getTile(px,py).tp = terrainTypes.get("swamp");
-    float ft = getTile(px,py).height;
-    float rcap = min(getTile(px,py).soilcover,min(speed,0.5)*(cap-soil));
+
+    float rcap = min(min(max(0,dheight),getTile(px,py).soilcover),0.1*(cap-soil));
     rcap = max(rcap,0);
+    float accum = 0;
     
     
-    
-    for (int i=-1; i<=1; i++)
+    for (int i=-3; i<=3; i++)
       {
-        for (int j=-1; j<=1; j++)
+        for (int j=-3; j<=3; j++)
         {
-          float t = dist(i,j,0,0)+1.0;
+          float t = dist(i,j,0,0)+0.5;
           t=1f/t;
-          getTile(px+i,py+j).soilcover -=rcap*t/toal;
-           getTile(px+i,py+j).height -= rcap*t/toal;
+          float take = min(getTile(px+i,py+j).soilcover,rcap*t/toal);
+          getTile(px+i,py+j).soilcover -=take;
+           getTile(px+i,py+j).height -= take;
+          accum += take;
         }
       }
     
-   soil+=rcap;
+   soil+=accum;
    
    if(z!=0){
     
@@ -209,17 +219,9 @@ void erode(){
     
   }
   if(soil>0){
-    float soildep = soil*1.0;
-    for (int i=-1; i<=1; i++)
-      {
-        for (int j=-1; j<=1; j++)
-        {
-          float t = dist(i,j,0,0)+1.0;
-          t=1f/t;
-          getTile(px+i,py+j).soilcover +=soildep*t/toal;
-           getTile(px+i,py+j).height += soildep*t/toal;
-        }
-      }
+    float soildep = soil*0.05;
+    getTile(px,py).soilcover +=soildep;
+     getTile(px,py).height += soildep;
   }
   
 }
@@ -230,13 +232,13 @@ void settleWater(){
         for (int j=1; j<land[i].length-1; j++)
         {
           //maximum runoff moisture
-          float maxamount = lerp(max(0,land[i][j].moisture-0.15)*land[i][j].moisture,land[i][j].moisture,1.0-land[i][j].soilcover);
+          float maxamount = lerp(sqrt(max(0,land[i][j].moisture-0.15)),land[i][j].moisture,1.0-land[i][j].soilcover)*0.25;
           
           
-          float xwdirleft = max(0,land[i][j].height+land[i][j].moisture - land[i-1][j].height+land[i-1][j].moisture);
-          float xwdirright = max(0,land[i][j].height+land[i][j].moisture - land[i+1][j].height+land[i+1][j].moisture);
-          float ywdirup = max(0,land[i][j].height+land[i][j].moisture - land[i][j-1].height+land[i][j-1].moisture);
-          float ywdirdown = max(0,land[i][j].height+land[i][j].moisture - land[i][j+1].height+land[i][j+1].moisture);
+          float xwdirleft = max(0,land[i][j].height+land[i][j].moisture - (land[i-1][j].height+land[i-1][j].moisture));
+          float xwdirright = max(0,land[i][j].height+land[i][j].moisture - (land[i+1][j].height+land[i+1][j].moisture));
+          float ywdirup = max(0,land[i][j].height+land[i][j].moisture - (land[i][j-1].height+land[i][j-1].moisture));
+          float ywdirdown = max(0,land[i][j].height+land[i][j].moisture - (land[i][j+1].height+land[i][j+1].moisture));
           
           
           float xdirleft = max(0,land[i][j].height - land[i-1][j].height);
@@ -269,7 +271,7 @@ void settleWater(){
           
           newheight[i][j] +=land[i][j].height- (min2*maxerosion);
           
-          if(total<=0){
+          if(total<=0||Float.isNaN(maxerosion)){
             newheight[i][j] =land[i][j].height;
             continue;
           }
@@ -303,10 +305,11 @@ void settleWater(){
             if(Float.isNaN( land[i][j].soilcover)|| land[i][j].soilcover<0){
              land[i][j].soilcover = 0;
             }
+          
+          land[i][j].height=newheight[i][j];
           if(land[i][j].height<0||Float.isNaN(land[i][j].height)){
             land[i][j].height=0;
           }
-          land[i][j].height=min(1.5,newheight[i][j]);
           newheight[i][j] = 0;
         }
       }
@@ -315,13 +318,14 @@ void settleWater(){
 
 float toal = 0.0;
 PImage output;
+PeasyCam p;
 void setup(){
-  for (int i=-1; i<=1; i++)
+  for (int i=-3; i<=3; i++)
       {
-        for (int j=-1; j<=1; j++)
+        for (int j=-3; j<=3; j++)
         
         {
-          toal+=1f/(dist(i,j,0,0)+1.0);
+          toal+=1f/(dist(i,j,0,0)+0.5);
         }
       }
   masterobj = parseJSONObject(fileToString("masterContent.txt"));
@@ -331,9 +335,9 @@ void setup(){
     terrainTypes.put(ttype.getString("name"),new TerrainType(ttype));
   }
   generate(400,200);
-  size(400,200);
+  size(1000,500,P3D);
   output = terrainToImage();
-  
+  p  = new PeasyCam(this, 400);
     
 }
 
@@ -356,7 +360,7 @@ PImage terrainToImage(){
 
 void draw(){
   background(200);
-  image(output,0,0);
+  //image(output,0,0);
   for(int i =0 ;i<5;i++){
     //settleWater();
     for(int z =0;z<10;z++){
@@ -366,6 +370,24 @@ void draw(){
   
   
   reassignAll();
-  output = terrainToImage();
-  
+  //output = terrainToImage();
+  noStroke();
+  translate(-w/2,-h/2);
+  directionalLight(255,255,255, -1, 1, -0.5);
+  directionalLight(255,255,255, -1, 1, -0.52);
+  ambientLight(40,100,130);
+  beginShape(QUADS);
+  for (int i=0; i<land.length-1; i++)
+  {
+    for (int j=0; j<land[i].length-1; j++)
+      
+    {
+      fill(lerpColor(land[i][j].tp.c,color(0,0,30),(1.0-land[i][j].height)));
+      vertex(i,j,land[i][j].getDisplayHeight());
+      vertex(i+1,j,land[i+1][j].getDisplayHeight());
+      vertex(i+1,1+j,land[i+1][j+1].getDisplayHeight());
+      vertex(i,1+j,land[i][j+1].getDisplayHeight());
+    }
+  }
+  endShape();
 }
