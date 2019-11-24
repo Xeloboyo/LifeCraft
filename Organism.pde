@@ -1,23 +1,17 @@
 
-import org.json.simple.*;
+//import org.json.simple.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-import org.json.simple.parser.JSONParser;
+//import org.json.simple.parser.JSONParser;
 class Organism {
     //This will be the base starting species
     //Contains base parameters of species etc. 
-    JSONObject species; 
-    String filename;
-    int evopoints;
-    //Records all changeable parameters (e.g. vision range, movement speed etc.).
-    //Put in hashmap to allow addition and changing of parameters
-    HashMap <String, Object> parameters;
-class Organism {
+
     //This will be the base starting species
     JSONObject species; 
     String filename;
     int evopoints;
-    
+    HashMap <String, Object> parameters;
     //If goes to zero creature dies.
     float energy;
     final float MAX_ENERGY=100f;
@@ -91,7 +85,7 @@ abstract class Trait {
         */
         File f;
         BufferedReader pr;
-        if(folder.equals("main")){
+       /*if(folder.equals("main")){
             f = new File(sysdir+"\\data\\prop\\"+bname+".json");
         }else {
             f = new File(sysdir+"\\mod\\"+folder+"\\data\\prop\\"+bname+".json");
@@ -107,7 +101,7 @@ abstract class Trait {
             JSONWHOLE=JSONWHOLE.concat(t+"\n");
         } 
         System.out.println(JSONWHOLE);
-        JSONParser jp = new JSONParser();
+        JSONParser jp = new JSONParer();
         JSONObject all = (JSONObject)jp.parse(JSONWHOLE);
         JSONArray traiters = (JSONArray)all.get("traits");
         JSONObject trait= (JSONObject) traiters.get(index);
@@ -144,7 +138,7 @@ abstract class Trait {
            }
         } catch (Exception e) {
           Logger.getLogger(Organism.class.getName()).log(Level.SEVERE, null, e);
-        }
+        }*/
     }
     public void saveTrait() {
       
