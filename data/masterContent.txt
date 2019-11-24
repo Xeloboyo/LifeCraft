@@ -1,0 +1,58 @@
+{
+	"terrainTypes":9,
+	"TerrainType_0":{
+		"name": "dirt",
+		"red": 150,
+		"green": 70,
+		"blue": 10
+	},
+	"TerrainType_1":{
+		"name": "grass",
+		"red": 150,
+		"green": 200,
+		"blue": 10
+	},
+	"TerrainType_2":{
+		"name": "sand",
+		"red": 255,
+		"green": 232,
+		"blue": 132
+	},
+	"TerrainType_3":{
+		"name": "swamp",
+		"red": 105,
+		"green": 173,
+		"blue": 76
+	},
+	"TerrainType_4":{
+		"name": "water",
+		"red": 0,
+		"green": 148,
+		"blue": 255
+	},
+	"TerrainType_5":{
+		"name": "rock",
+		"red": 150,
+		"green": 130,
+		"blue": 100
+	},
+	"TerrainType_6":{
+		"name": "snow",
+		"red": 255,
+		"green": 255,
+		"blue": 255
+	},
+	"TerrainType_7":{
+		"name": "ice",
+		"red": 205,
+		"green": 205,
+		"blue": 255
+	},
+	"TerrainType_8":{
+		"name": "forest",
+		"red": 30,
+		"green": 100,
+		"blue": 40
+	},
+	
+}

@@ -1,14 +1,19 @@
+
+
+//import org.json.simple.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+
 
 //Base params needed to add to organism: stuff like health etc. want to add here to add modularity and avoid hardcoding.
 public final String[] critical_params={};
 class Organism {
+
     //This will be the base starting species
     JSONObject species; 
     String filename;
     int evopoints;
-    
+    HashMap <String, Object> parameters;
     //If goes to zero creature dies.
     
     //Traits/body parts determine how the thing works: the specific trait
@@ -90,16 +95,20 @@ class Trait {
         */
         File f;
         BufferedReader pr;
+     
         if(folder.equals("main")){
-            f = new File(sysdir+"\\data\\prop\\"+filename+".json");
+            f = dataFile("/prop/"+filename+".json");
+
         }else {
             f = new File(sysdir+"\\mod\\"+folder+"\\data\\prop\\"+filename+".json");
         }   
         
         if(!f.exists()){System.err.println("FILE NOT FOUND: mod\\"+folder+","+filename+".json");return; }
-        try {
-        pr = new BufferedReader(new FileReader(f));
+
         
+       
+        try {
+           pr = new BufferedReader(new FileReader(f));
         String t;
         String JSONWHOLE="";
         while((t=pr.readLine())!=null){
@@ -108,8 +117,9 @@ class Trait {
         System.out.println(JSONWHOLE);
         JSONObject all = parseJSONObject(JSONWHOLE);
         JSONArray traiters = parseJSONArray("traits");
+
         JSONObject trait= (JSONObject) traiters.get(index);
-        try {
+        
            String name = getStringJSON(trait, "name_not_found", "name");
            Boolean hasAbilities= getBooleanJSON(trait, false, "hasAbilities");
            if (hasAbilities) {
