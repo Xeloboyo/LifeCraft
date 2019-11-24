@@ -15,6 +15,7 @@ boolean showland=true;
 boolean showheights=false;
 boolean showores=false;
 
+String folder="main";
 
 JSONObject masterobj;
 HashMap<String,TerrainType> terrainTypes = new HashMap();
