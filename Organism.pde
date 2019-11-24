@@ -368,7 +368,9 @@ class Interaction {
             f = new File(sysdir+"\\mod\\"+folder+"\\data\\prop\\"+filename+".json");
         }   
          if(!f.exists()){System.err.println("FILE NOT FOUND: mod\\"+folder+","+filename+".json");return; }
-         try {
+
+        try{ 
+
        BufferedReader br=new BufferedReader(new FileReader(f));
        //Get trait 1 and trait 2 indices to load
        String t;
@@ -377,7 +379,9 @@ class Interaction {
             JSONWHOLE=JSONWHOLE.concat(t+"\n");
         } 
         JSONObject all = parseJSONObject(JSONWHOLE);
+        
         JSONArray interactions = parseJSONArray("interactions");
+        
         JSONObject interaction = (JSONObject) interactions.get(index);
         name=interaction.getString("name");
         JSONArray interactionTraitReqs=(JSONArray) parseJSONArray(name+" trait reqs");
@@ -394,10 +398,12 @@ class Interaction {
             removeEffect.add(((JSONObject) effectTraits.get(i)).getBoolean("trait remove"));
             effect.add(new Trait(traitfilename,index));
         }
+
          } catch (Exception e) {
             e.printStackTrace(); 
            
          }
+
    }
 }
 //This is used to manage the priority of interactions (e.g. whether an interaction will occur as dependent on the location of an organism etc.)

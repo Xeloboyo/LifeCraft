@@ -93,6 +93,9 @@ class SpriteBatch{
   }
   
   void addDrawOrder(String sprite,int x,int y){
+    if(!altasids.hasKey(sprite)){
+      return;
+    }
     queue[csize][0] = altasids.get(sprite);
     queue[csize][1] = x;
     queue[csize][2] = y;
@@ -111,6 +114,9 @@ class SpriteBatch{
     csize++;
   }
   void addDrawOrder(String sprite,int x,int y,int w,int h,int col){
+    if(!altasids.hasKey(sprite)){
+      return;
+    }
     queue[csize][0] = altasids.get(sprite);
     queue[csize][1] = x;
     queue[csize][2] = y;
@@ -195,20 +201,6 @@ class SpriteBatch{
 
 
 
-String replaceAll(String regex,String replaceWith,String input){
-  String st = "";
-  for(int i = 0;i<input.length();i++){
-    if(i+regex.length()<=input.length()&&regex.equals(input.substring(i,i+regex.length()))){
-      
-      st+=replaceWith;
-      i+=regex.length()-1;
-    }else{
-      st+=input.charAt(i);
-    }
-    
-  }
-  return st;
-}
 File StringToFile(String s,String fname){
   PrintWriter pr = createWriter("data/tempShader/"+fname);
   
@@ -310,3 +302,503 @@ float sdBox( float px,float py, float bx,float by )
   PVector d = new PVector(abs(px) - bx,abs(py)-by);
   return min(max(d.x,d.y),0.0) + dist(max(0,d.x),max(0,d.y),0.0,0.0);
 }
+
+String[] splitofSameLevel(String input, String begin, String terminator, String delim) {
+  return splitofSameLevel(input,begin, terminator,delim, false, false);
+}
+
+HashMap<String,String[]> splitCache = new HashMap();
+String[] cachedSplitofSameLevel(String input, String begin, String terminator, String delim, boolean includeGrouping, boolean quotations) {
+  String key = input+begin+terminator+delim+includeGrouping+quotations;
+  if(splitCache.containsKey(key)){
+    return splitCache.get(key);
+  }
+  String []res = splitofSameLevel(input, begin, terminator, delim, includeGrouping, quotations);
+  splitCache.put(key,res);
+  return res;
+}
+
+String[] cachedMultiSplitofSameLevel(String input, String begin, String terminator, String delim, boolean includeGrouping, boolean quotations) {
+  String key = input+begin+"||"+terminator+delim+includeGrouping+quotations;
+  if(splitCache.containsKey(key)){
+    return splitCache.get(key);
+  }
+  String []res = multiSplitofSameLevel(input, begin, terminator, delim, includeGrouping, quotations);
+  splitCache.put(key,res);
+  return res;
+}
+
+//includes the query
+String readForCharOnSameLevel(String input, String begin, String terminator,char search, int start,int direction){
+  int[] depth = multiSplitDepth(input,begin,terminator,0);
+  int beginLevel = depth[start];
+  String out = "";
+  for(int i = start;i<input.length()&&i>=0;i+=direction){
+    out=direction>0?out+input.charAt(i):input.charAt(i)+out;
+    if(input.charAt(i)==search&&depth[i]==beginLevel){
+      break;
+    }
+  }
+  return out;
+}
+  int multiSplitSectors(String input, String begin, String terminator,int level) {
+    int[] depth = multiSplitDepth(input,begin,terminator,1);
+    boolean inTarget = false;
+    int sectors = 0;
+    for(int i = 0;i<input.length();i++){
+      if(depth[i]==level&&!inTarget){
+        sectors++;
+        inTarget=true;
+      }else if(depth[i]!=level&&inTarget){
+        inTarget=false;
+      }
+    }
+    return sectors;
+  }
+int[] multiSplitDepth(String input, String begin, String terminator, int offset) {
+  int level = 0;
+  //input=" "+input;
+  boolean inQuotes = false;
+  int[] depth = new int[input.length()];
+  boolean useGrouping = !(begin.length()==0||terminator.length()==0);
+  for (int i =-1; i<input.length(); i++) {
+    if(i>=0){
+      depth[i]=level;
+    }
+    if(i>=0&&input.charAt(i)=='"'){
+      inQuotes=!inQuotes;
+    }
+    boolean g = false;
+    do{
+      g = false;
+    if(useGrouping ){
+      for(int z = 0;z<begin.length();z++){
+        if (i<input.length()-1&& //prevent outofbounds
+          input.charAt(i+1)==(begin.charAt(z))) {
+          level++;
+          i++;
+          depth[i] = level-1+offset;
+          g=true;
+    
+        }
+      }
+      for(int z = 0;z<terminator.length();z++){
+        if (i<input.length()-1&& 
+          input.charAt(i+1)==(terminator.charAt(z))) {
+            
+          level--;
+          i++;
+          depth[i] = level+offset;
+          g=true;
+        }
+      }
+    }
+    
+    }while(g);
+  }
+  return depth;
+}
+
+String[] multiSplitofSameLevel(String input, String begin, String terminator, String delim, boolean includeGrouping, boolean quotations) {
+  StringBuilder out=new StringBuilder();
+  int level = 0;
+  input=" "+input;
+  ArrayList<String> output = new ArrayList();
+  boolean inQuotes = false;
+  boolean useGrouping = !(begin.length()==0||terminator.length()==0);
+  for (int i =-1; i<input.length(); i++) {
+    if(i>=0){
+      out.append(input.charAt(i));
+    }
+    if(i>=0&&quotations&&input.charAt(i)=='"'){
+      inQuotes=!inQuotes;
+    }
+    boolean g = false;
+    do{
+      g = false;
+    if(useGrouping ){
+      for(int z = 0;z<begin.length();z++){
+        if (i<input.length()-1&& //prevent outofbounds
+          input.charAt(i+1)==(begin.charAt(z))) {
+          level++;
+          if(level==1){
+            if(includeGrouping){
+              out.append(input.charAt(i+1));
+            }
+            i++;
+          }else{
+            continue;
+          }
+          g=true;
+    
+        }
+      }
+      for(int z = 0;z<begin.length();z++){
+        if (i<input.length()-1&& 
+          input.charAt(i+1)==(terminator.charAt(z))) {
+          level--;
+          if(level==0){
+            if(includeGrouping){
+              out.append(input.charAt(i+1));
+            }
+            i++;
+            
+          }else{
+            continue;
+          }
+          g=true;
+        }
+      }
+    }
+    if ((!inQuotes&&quotations)&&i<input.length()-delim.length()&& 
+      input.substring(i+1, i+1+delim.length()).equals(delim)) {
+      if(level==0){
+        i+=delim.length();
+        output.add(out.toString());
+        out.setLength(0);
+        g=true;
+      }
+     
+    }
+    }while(g);
+  }
+  output.add(out.toString());
+  return output.toArray(new String[]{});
+}
+String[] splitofSameLevel(String input, String begin, String terminator, String delim, boolean includeGrouping, boolean quotations) {
+  StringBuilder out=new StringBuilder();
+  int level = 0;
+  input=" "+input;
+  ArrayList<String> output = new ArrayList();
+  boolean inQuotes = false;
+  boolean useGrouping = !(begin.length()==0||terminator.length()==0);
+  for (int i =-1; i<input.length(); i++) {
+    if(i>=0){
+      out.append(input.charAt(i));
+    }
+    if(i>=0&&quotations&&input.charAt(i)=='"'){
+      inQuotes=!inQuotes;
+    }
+    boolean g = false;
+    do{
+      g = false;
+    if(useGrouping ){
+      if (i<input.length()-begin.length()&& //prevent outofbounds
+        input.substring(i+1, i+1+begin.length()).equals(begin)) {
+        level++;
+        if(level==1){
+          if(includeGrouping){
+            out.append(input.substring(i+1,1+i+begin.length()));
+          }
+          i+=begin.length();
+        }else{
+          continue;
+        }
+        g=true;
+  
+      }
+      if (i<input.length()-terminator.length()&& 
+        input.substring(i+1, i+1+terminator.length()).equals(terminator)) {
+        level--;
+        if(level==0){
+          if(includeGrouping){
+            out.append(input.substring(i+1,1+i+terminator.length()));
+          }
+          i+=terminator.length();
+          
+        }else{
+          continue;
+        }
+        g=true;
+      }
+    }
+    if ((!inQuotes||!quotations)&&i<input.length()-delim.length()&& 
+      input.substring(i+1, i+1+delim.length()).equals(delim)) {
+        //println("FOUND DELIM: ",out);
+      if(level==0){
+        
+        i+=delim.length();
+        output.add(out.toString());
+        out.setLength(0);
+        g=true;
+      }
+     
+    }
+    }while(g);
+  }
+  output.add(out.toString());
+  return output.toArray(new String[]{});
+}
+
+String[] splitWithQuotes(String input, String delim,boolean keepquotes) {
+  String out="";
+  ArrayList<String> output = new ArrayList();
+  boolean insideQuote = false;
+  for (int i =-1; i<input.length(); i++) {
+    
+    if(i<input.length()-1&&input.charAt(i+1)=='"'){
+        insideQuote=!insideQuote;
+        
+    }
+    if(i>=0&&(input.charAt(i)!='"'||keepquotes)){
+      out+=input.charAt(i);
+    }
+    boolean g = false;
+    do{
+      g = false;
+    
+      if (!insideQuote&&i<input.length()-delim.length()&& 
+        input.substring(i+1, i+1+delim.length()).equals(delim)) {
+        i+=delim.length();
+        output.add(out);
+        out="";
+        g=true;
+      
+        if(i<input.length()-1&&input.charAt(i+1)=='"'){
+          insideQuote=!insideQuote;
+        }
+      }
+    }while(g);
+  }
+  output.add(out);
+  return output.toArray(new String[]{});
+}
+String readToNext(String input, String match, int start) {
+  //println("debug:",input,match,start);
+  int am=0;
+  for (int i =start; i<input.length(); i++) {
+    if(i>=0){
+    am++;
+    }
+    if (input.substring(i+1, i+1+match.length()).equals(match)) {
+      break;
+    }
+  }
+  start = max(start,0);
+  return input.substring(start,start+am);
+}
+
+
+/*
+e.g. 
+ Example 1:
+ input = ab[cdef]gh
+ terminator = ]
+ begin = [
+ start at 'c' 's location
+ returns 'cdef'
+ 
+ Example 2:
+ input = ab[cdef[bee]ad]gh
+ terminator = ]
+ begin = [
+ start at 'c' 's location
+ returns 'cdef[bee]ad'
+ 
+ */
+String readToNextofSameLevel(String input, String begin, String terminator, int start) {
+  String out="";
+  int level = 1;
+  for (int i =start; i<input.length(); i++) {
+    out+=input.charAt(i);
+
+    if (i<input.length()-begin.length()&& //prevent outofbounds
+      input.substring(i+1, i+1+begin.length()).equals(begin)) {
+      level++;
+    }
+    if (i<input.length()-terminator.length()&& 
+      input.substring(i+1, i+1+terminator.length()).equals(terminator)) {
+      level--;
+      if (level==0) {
+        break;
+      }
+    }
+  }
+
+  return out;
+}
+
+
+
+boolean isArray(String line){
+  return('['==line.charAt(0)&& ']'==line.charAt(line.length()-1));
+}
+
+String[] splitArray(String scriptline){
+  String s = trimEnds(scriptline);
+  if(contains(s,"[")){
+    return cachedSplitofSameLevel(s,"[","]",",",true,true);
+  }
+  return splitWithQuotes(s,",",true);
+}
+String changeNthSplit(String input,String begin, String terminator, String delim,int no,String newString){
+  String[] s= splitofSameLevel(input,begin,terminator,delim);
+  s[no] = newString;
+  return deliminate(s,delim);
+}
+
+String changeNthSplit(String input, String delim,int no,String newString){
+  String[] s= splitWithQuotes(input,delim,true);
+  s[no] = newString;
+  return deliminate(s,delim);
+}
+
+
+
+String getSingle(String input[][], String key) {
+  String out="";
+  for (String[] s : input) {
+    if (s[0].equals(key)) {
+      return s[1];
+    }
+  }
+  return out;
+}  
+
+String[]  getAll(String input[][], String key) {
+  ArrayList<String> out=new ArrayList();
+  for (String[] s : input) {
+    if (s[0].equals(key)) {
+      out.add(s[1]);
+    }
+  }
+  return out.toArray(new String[]{});
+}  
+String fill(char c,int am){
+  String s="";
+  while(s.length()<am){s+=c;}
+  return s;
+}
+String fill(String c,int am){
+  String s="";
+  while(s.length()<am*c.length()){s+=c;}
+  return s;
+}
+String replaceAll(String input,String regex,String replaceWith){
+  String st = "";
+  for(int i = 0;i<input.length();i++){
+    if(i+regex.length()<=input.length()&&regex.equals(input.substring(i,i+regex.length()))){
+      
+      st+=replaceWith;
+      i+=regex.length()-1;
+    }else{
+      st+=input.charAt(i);
+    }
+    
+  }
+  return st;
+}
+int countAll(String input,String regex){
+  int st =0;
+  for(int i = 0;i<input.length();i++){
+    if(i+regex.length()<=input.length()&&regex.equals(input.substring(i,i+regex.length()))){
+      st++;
+      i+=regex.length()-1;
+    }
+    
+  }
+  return st;
+}
+boolean contains(String input,String regex){
+  for(int i = 0;i<input.length();i++){
+    if(i+regex.length()<=input.length()&&regex.equals(input.substring(i,i+regex.length()))){
+      return true;
+    }
+  }
+  return false;
+}
+boolean contains(String input,char regex){
+  for(int i = 0;i<input.length();i++){
+    if(input.charAt(i)==regex){
+      return true;
+    }
+  }
+  return false;
+}
+boolean containsAny(String input,String regex){
+  for(int i = 0;i<input.length();i++){
+    for(int z=0;z<regex.length();z++){
+    if(input.charAt(i)==regex.charAt(z)){
+      return true;
+    }
+    }
+  }
+  return false;
+}
+String deliminate(String input[], String delim) {
+  //println("deliminting", Arrays.toString(input), delim, "    -----");
+  if (input.length==1) {
+    return input[0];
+  }
+  String out="";
+  for (String s : input) {
+    out+=(out.length()==0?"":delim)+s;
+  }
+  return out;
+}
+
+String trimEnds(String line){
+  if(line.length()<=2){return"";}
+  return line.substring(1,line.length()-1);
+}
+
+boolean isInt(String s){
+  if(s.isEmpty()){return false;}
+  for(int i = 0;i<s.length();i++){
+    if(s.charAt(i)<'0'||s.charAt(i)>'9'){
+      if(i==0&&s.charAt(i)=='-'&&s.length()>1){
+        continue;
+      }
+      return false;
+    }
+  }
+  return true;
+}
+String toRaw(String scriptformat){
+  boolean aint = isInt(scriptformat);
+  String str = scriptformat;
+  if(!aint){
+    str = trimEnds(str);
+  }
+  return str;
+}
+
+int hash(int tick){
+  int x = ((tick>>16) ^ tick)*0x45d9f3b;
+   x = ((x>>16) ^ x)*0x45d9f3b;
+   x = ((x>>16) ^ x);
+  return x;
+}
+String dfGetString(JSONObject s, String id,String defaultstr){
+  return s.hasKey(id)?s.getString(id):defaultstr;
+}
+
+int dfGetInt(JSONObject s, String id,int defaultstr){
+  return s.hasKey(id)?s.getInt(id):defaultstr;
+}
+
+boolean inclusiveBetween(int x,int min,int max){
+  return x>=min&&x<=max;
+}
+boolean exclusiveBetween(int x,int min,int max){
+  return x>min&&x<max;
+}
+
+boolean dfGetBoolean(JSONObject s, String id,boolean defaultstr){
+  //println(id);
+  return s.hasKey(id)?s.getBoolean(id):defaultstr;
+}
+String generateId(){
+  String id="";
+  for(int i = 0;i<10;i++){
+      id+=(char)random('a','z');
+    }
+    for(int i = 0;i<5;i++){
+      id+=(char)random('1','9');
+    }
+    return id;
+}
+
+HashMap<String, Integer> actionWeights = new HashMap();
+
+float[] rand = new float[100];
