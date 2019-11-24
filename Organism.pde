@@ -46,7 +46,7 @@ class Trait {
     public boolean activated;
     public int index;
     public String filename;
-    ArrayList < Parameter> paramChanges;
+    ArrayList < Parameter> paramChanges=new ArrayList(); 
     //This is to indicate whether a particular trait is temporary, and is useful for effects on organisms such as injury, being on fire or famine.
     boolean isModifier; 
     Trait(String filename, int index) {
@@ -82,7 +82,8 @@ class Trait {
         BufferedReader pr;
      
         if(folder.equals("main")){
-            f = dataFile("/prop/"+filename+".json");
+            println(sysdir+""+filename+".json");
+            f = new File(sysdir+""+filename+".json");
 
         }else {
             f = new File(sysdir+"\\mod\\"+folder+"\\data\\prop\\"+filename+".json");
@@ -101,9 +102,8 @@ class Trait {
         } 
         System.out.println(JSONWHOLE);
         JSONObject all = parseJSONObject(JSONWHOLE);
-        JSONArray traiters = parseJSONArray("traits");
-
-        JSONObject trait= (JSONObject) traiters.get(index);
+        JSONArray traiters = all.getJSONArray("traits");
+        JSONObject trait= traiters.getJSONObject(index);
         
            String name = getStringJSON(trait, "name_not_found", "name");
            String desc= getStringJSON(trait, "desc_not_found", "desc");
@@ -119,7 +119,7 @@ class Trait {
              }
            }
            //Parameter loading
-           JSONArray parameters = (JSONArray) trait.get("parameters");
+           JSONArray parameters = (JSONArray) trait.getJSONArray("parameters");
            for (int i=0; i< parameters.size(); i++) {
               //Recommended: use _change to indicate that an already existing parameter is to be changed. 
               Parameter p=new Parameter((JSONObject)parameters.get(i));
@@ -176,7 +176,27 @@ class Parameter {
           String parameterValueChange=getStringJSON(obj,"0","value");
           dataType=paramDataType;
           try {
-              paramValue=Class.forName(paramDataType).cast(parameterValueChange);
+              switch (dataType) {
+                case "Integer":
+                    paramValue=Integer.parseInt(parameterValueChange);
+                    break;
+                case "Double":
+                    paramValue=Double.parseDouble(parameterValueChange);
+                    break;
+                case "Float":
+                    paramValue=Float.parseFloat(parameterValueChange);
+                    break;
+                case "Boolean":
+                    paramValue=Boolean.parseBoolean(parameterValueChange);
+                    break;
+                case "String": 
+                    //Default will replace
+                    paramValue=(String)paramValue;
+                    break;
+                default:
+                    
+                    break;
+             }
           } catch (Exception e) {
               //something with integer casting from string not being viable most likely.
               //not sure how to fix this without annoying switch statements. if necessary add in switch statements.
@@ -298,7 +318,9 @@ class Interaction {
    //This class details the interactions between two traits. skeleton for later
    String name;
    ArrayList<Trait> interactingTraits=new ArrayList();
+   //Used to determine whether an interaction is more likely to occur based on certain interacting values.
    HashMap<Parameter,Object> paramInteractingValues=new HashMap();
+   ArrayList <Boolean> overOrUnder=new ArrayList();
    //useful for example if an effect occurs upon the presence of one trait and absence of another.
    //If true, then the absence of that trait confers a modifier.
    ArrayList<Boolean> traitAbsenceReq=new ArrayList();
@@ -341,7 +363,7 @@ class Interaction {
    public void load() {
        File f; 
        if(folder.equals("main")){
-            f = new File(sysdir+"\\data\\prop\\"+filename+".json");
+            f = new File(sysdir+"\\data\\prop"+filename+".json");
         }else {
             f = new File(sysdir+"\\mod\\"+folder+"\\data\\prop\\"+filename+".json");
         }   

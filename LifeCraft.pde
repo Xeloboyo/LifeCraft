@@ -64,6 +64,8 @@ HashMap<String,TerrainType> terrainTypes = new HashMap();
 PImage tiles;
 
 long time=0;
+//Every 
+int suncycle=12000;
 
 
 class TerrainType{
@@ -413,8 +415,6 @@ void settleWater(){
         }
       }
 }
-
-
 
 
 

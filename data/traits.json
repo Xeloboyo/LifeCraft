@@ -1,0 +1,20 @@
+{
+    "traits": [
+        {    "name": "Alive", 
+            "desc": "Being alive is generally a nice feeling.",
+            "has abilities": false,
+            "parameters": [
+                {
+                    "name": "Health",
+                    "desc": "The overall health of a creature. When this reaches zero, the creature dies. Affected by a number of conditions.",
+                    "data type": "Float",
+                    "value": "100",
+                    "has update parameter": false,
+                    "has max parameter": false,
+                    "has gui": false
+
+                }
+            ]
+        }
+    ]
+}
