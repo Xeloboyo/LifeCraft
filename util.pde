@@ -1,5 +1,8 @@
 
-
+import java.util.*;
+import java.awt.Toolkit;
+import java.awt.datatransfer.*;
+import java.io.*;
 
 //draws a bunch of sprites with a single draw call for efficentcy sake
 class SpriteBatch{
@@ -837,3 +840,100 @@ void copyToClip(String s){
   clipboard.setContents(selection, selection);
  
  }
+ 
+ class Palette{
+  ArrayList<Integer> colors = new ArrayList();
+  Palette(color[] cs){
+    for(color c:cs){
+      colors.add(c);
+    }
+  }
+  
+  Palette(List<Integer> cs){
+    for(color c:cs){
+      colors.add(c);
+    }
+  }
+  
+
+  Palette(PImage img){
+    addPalette(img);
+  }
+  void addPalette(Palette img)
+  {
+    colors.addAll(Arrays.asList(img.colors.toArray(new Integer[]{})));
+  }
+  
+  Palette clone(){
+    return new Palette(Arrays.asList(colors.toArray(new Integer[]{})));
+  }
+  
+  void addPalette(PImage img){
+    for(int i = 0;i<img.width;i++){
+      for(int j = 0;j<img.height;j++){
+        if(!colors.contains(img.get(i,j))){
+          colors.add(img.get(i,j));
+        }
+      }
+    }
+  }
+  
+  PImage snapToClosest(PImage img){
+    img.loadPixels();
+    for(int i = 0;i<img.width;i++){
+      for(int j = 0;j<img.height;j++){
+        img.pixels[i+j*img.width]=getClosest(img.pixels[i+j*img.width]);
+      }
+    }
+    img.updatePixels();
+    return img;
+  }
+  PImage snapToIndex(PImage img){
+    img.loadPixels();
+    for(int i = 0;i<img.width;i++){
+      for(int j = 0;j<img.height;j++){
+        img.pixels[i+j*img.width]=getDirectFromIndex(img.pixels[i+j*img.width]);
+      }
+    }
+    img.updatePixels();
+    return img;
+  }
+  color getDirectFromIndex(color c){
+    color current = colors.get(int(colors.size()*red(c)/256));
+   
+    return current;
+  }
+  
+  color getClosest(color c){
+    color current = c;
+    int dist = 9999999;
+    for(color col:colors){
+      int ndist = int(abs(red(c)-red(col))+abs(green(c)-green(col))+abs(blue(c)-blue(col))+ 200*abs(alpha(c)-alpha(col)));
+      if(ndist<dist){
+        current = col;
+        dist = ndist;
+      }
+    }
+    return current;
+  }
+
+}
+
+
+TextureSelect await = null;
+void textureSelected(File selection) {
+  if (selection == null) {
+    println("Window was closed or the user hit cancel.");
+  } else {
+    println("Hello?");
+    if(selection.getName().contains(".png")||selection.getName().contains(".jpeg")){
+      await.texture =  loadImage(selection.getAbsolutePath());
+      await.dir = selection.getAbsolutePath().replace(dataPath(""),"");
+      println("-------dir:"+await.dir);
+      await.valid = true;
+    }
+
+   //resetTileSprite(1,2);
+   
+  }
+}

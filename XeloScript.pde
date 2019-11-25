@@ -19,6 +19,16 @@ Program passValues(String[] passInVarName, String[] param, String program) {
     
 }
 
+
+void injectVariable(String[] variableName, String[] values, Program program) {
+    for (int i=0; i<variableName.length; i++) {
+      JSONObject jo = new JSONObject();
+          jo.setString("value",values[i]);
+          jo.setInt("depth",0);
+          program.memory.setJSONObject(variableName[i],jo);
+    }
+}
+
 FunctionExecutor defaultFunctions = new FunctionExecutor(){
     public String[] execute(String cmd, String[] params){
       //println(cmd,Arrays.toString(params));
