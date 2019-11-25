@@ -650,7 +650,33 @@
 			"parameters": [
 				{
 					"name": "Age of care",
-					"desc": "The age up to which the creature will care for its young."
+					"desc": "The age up to which the creature will care for its young.",
+					"data type": "Integer",
+					"value": 10,
+				}
+			]
+		},
+		{
+			"name": "Burning",
+			"desc": "This creature is currently on fire. Contact with moisture will alleviate this, however they will still be significantly injured and prone to infection."
+		},
+		{
+			"name": "Burn injury",
+			"desc": "This creature has a burn injury.",
+			"parameters": [
+				{
+					"name": "Immune system ability",
+					"desc": "How well the creature is able to fight off infection.",
+					"data type": "Integer",
+					"value": -2,
+				},
+				{
+					"max parameter": {
+						"name": "Max Health",
+						"desc": "How much a creature can handle before succumbing to death.",
+						"data type": "Float",
+						"value": -30
+					}
 				}
 			]
 		}
