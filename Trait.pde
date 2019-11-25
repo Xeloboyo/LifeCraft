@@ -4,6 +4,9 @@ class Trait {
     //>1=active ability
     public String name;
     public String desc;
+    //If not null, runs a particular script every tick.
+    //Typically used for modifying behavior of a creature and checks on parameters.
+    String runEveryTick;
     public int priority;
     //active as in is it on
     public boolean activated;
@@ -69,9 +72,12 @@ class Trait {
         JSONArray traiters = all.getJSONArray("traits");
         JSONObject trait= traiters.getJSONObject(index);
         
-           String name = getStringJSON(trait, "name_not_found", "name");
-           String desc= getStringJSON(trait, "desc_not_found", "desc");
+           name = getStringJSON(trait, "name_not_found", "name");
+           desc= getStringJSON(trait, "desc_not_found", "desc");
            Boolean hasAbilities= getBooleanJSON(trait, false, "has abilities");
+           //This is the resulting scripted behavior for getting next target position.
+           runEveryTick=getStringJSON(trait, "", "run every tick");
+           
            if (hasAbilities) {
              int count=1;
              JSONObject nextAbility= (JSONObject) trait.get("ability "+count);
