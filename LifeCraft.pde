@@ -6,6 +6,10 @@ PImage output;
 PeasyCam p;
 SpriteBatch tileBatch;
 void setup(){
+  System.setProperty("user.dir","C:\\Users\\Maks\\Documents\\GitHub\\LifeCraft\\");
+  sysdir=System.getProperty("user.dir");
+  Trait alive=new Trait("data\\traits",0);
+  println(alive.name);
   for (int i=-3; i<=3; i++){for (int j=-3; j<=3; j++){toal+=1f/(dist(i,j,0,0)+0.5);}}
   for (int i=-1; i<=1; i++){for (int j=-1; j<=1; j++){toal2+=1f/(dist(i,j,0,0)+0.2);}}
   masterobj = parseJSONObject(fileToString("masterContent.txt"));

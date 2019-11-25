@@ -1,0 +1,34 @@
+{
+	"interactions": [
+		"Death": {
+			"name": "Death",
+			"desc": "The state of dying",
+			"trait file": "data\\traits",
+			"active": "data\\scripts\\checkdeath",
+			"priority": 0,
+			"trait reqs": [
+				{
+					"trait name": "Alive",
+					"trait absence req": false
+				}
+			], "effects": [
+				{
+					"trait name": "Alive",
+					"remove trait": true
+				},
+				{
+					"trait name": "Aerobic",
+					"remove trait": true
+				}
+				{
+					"trait name": "Dead",
+					"remove trait": false
+				}
+			], "parameter reqs": [
+				{	
+					"name": "Health"
+				}
+			]
+		}
+	]
+}

@@ -3,6 +3,21 @@ import java.util.*;
 abstract class FunctionExecutor{
   abstract String[] execute(String cmd, String[] params);
 }
+//Function for passing in values into a program.
+Program passValues(String[] passInVarName, String[] param, String program) {
+    String resultProgram=program;
+    for (int i=0; i<passInVarName.length; i++) {
+       String[] tokens=resultProgram.split(passInVarName[i]);
+       resultProgram="";
+       for (int j=0; j<tokens.length-1; j++) {
+           tokens[j]+=param[i];
+           resultProgram.concat(tokens[j]);
+       }
+    }
+    Program p=new Program(resultProgram);
+    return p;
+    
+}
 
 FunctionExecutor defaultFunctions = new FunctionExecutor(){
     public String[] execute(String cmd, String[] params){
