@@ -1,4 +1,24 @@
 import java.io.*;
+//Gets a program from a filename.
+String getFile(String filename) {
+    File f;
+    BufferedReader pr;
+    String WHOLE="";
+    try {
+        f = new File(sysdir+""+filename+".txt");
+         pr = new BufferedReader(new FileReader(f));
+        String t;
+        
+        while((t=pr.readLine())!=null){
+            WHOLE=WHOLE.concat(t+"\n");
+        } 
+        pr.close();
+        
+    } catch (Exception e) {
+       e.printStackTrace(); 
+    }
+    return WHOLE;
+}
 class Saver
 {
     void save(String filename,int[][] terraintype,float[][] terrainvalues,float[][] ores)
@@ -82,7 +102,7 @@ private static int getIntJSON(JSONObject o, int defaultvalue, String key){
     private static String getStringJSON(JSONObject o, String defaultvalue, String key){
         Object ob = o.get(key);
         if(ob!=null){
-            return (String)ob;
+            return ob.toString();
         }
         return defaultvalue;
     }
@@ -93,4 +113,5 @@ private static int getIntJSON(JSONObject o, int defaultvalue, String key){
         }
         return defaultvalue;
     }
+    
     public static String sysdir=System.getProperty("user.dir");

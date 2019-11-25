@@ -1,0 +1,659 @@
+{
+    "traits": [
+		{	"name": "Alive", 
+			"desc": "Being alive is generally a nice feeling.",
+			"has abilities": false,
+			"parameters": [
+				{
+					"name": "Health",
+					"desc": "The overall health of a creature. When this reaches zero, the creature dies. Affected by a number of conditions.",
+					"data type": "Float",
+					"value": 100,
+					"has update parameter": true,
+					"has max parameter": true,
+					"has gui": false,
+					"update tick": 60,
+					"update parameter": {
+						"name": "Health Regen",
+						"desc": "The change of health for a creature over time. Changes once every 60 ticks. Influenced by a number of conditions, such as combat or injury.",
+						"data type": "Float",
+						"value": 0.1
+					},
+					"max parameter": {
+						"name": "Max Health",
+						"desc": "How much a creature can handle before succumbing to death.",
+						"data type": "Float",
+						"value": 100
+					}
+				}, 
+				{
+					"name": "Energy",
+					"desc": "How much energy a creature currently has to go about its daily activities",
+					"data type": "Float",
+					"value": 100f,
+					"has update parameter": true,
+					"has max parameter": true,
+					"update tick": 60,
+					"update parameter": {
+						"name": "Energy Regen",
+						"desc": "The change of energy for a creature over time. Changes once every 60 ticks. Influenced by a number of conditions, such as combat or injury. A severe lack of energy will lead to a decrease in health",
+						"data type": "Float",
+						"value": -0.1
+					},
+					"max parameter": {
+						"name": "Max Energy",
+						"desc": "The maximum a creature can achieve without eating or sleeping",
+						"data type": "Float",
+						"value": 100
+						
+					}
+				},
+				{
+					"name":"Age",
+					"desc":"The older, the wiser",
+					"data type": "Integer",
+					"value":0,
+					"has update parameter": true,
+					"has max parameter": false,
+					"has gui": false,
+					"update tick": 100000,
+					"update parameter": {
+						"name": "Growth",
+						"desc": "This creature is slowly growing.",
+						"data type": "Float",
+						"value": 1,
+						"has gui": false
+					}
+				},
+				{
+					"name":"Weight",
+					"desc":"Have you seen the scale lately?",
+					"data type": "Integer",
+					"value":100,
+					"has update parameter": true,
+					"has max parameter": false,
+					"has gui": false,
+					"update tick": 100000,
+					"update parameter": {
+						"name": "Weight increase",
+						"desc": "As the creature grows, so does its weight.",
+						"data type": "Float",
+						"value": 0,
+						"has gui": false
+					}
+				}
+			]
+		},
+		{	
+			"name": "Undead",
+			"desc": "This creature is a member of the undead.",
+			"has abilities": true,
+			"parameters": [
+				{	
+					"name": "Sustenance",
+					"desc": "To survive, the undead must look to the living.",
+					"data type": "Float",
+					"value": 50,
+					"has update parameter": true,
+					"has max parameter": false,
+					"has gui": false,
+					"update parameter": {
+						"name": "Sustenance decay",
+						"desc": "The undead swiftly decay without a source of sustenance.",
+						"data type": "Float",
+						"value": -0.3,
+						"has gui": false
+					}
+				},
+				{
+					"name":"Weight",
+					"desc":"Have you seen the scale lately?",
+					"data type": "Integer",
+					"value":100,
+					"has update parameter": true,
+					"has max parameter": false,
+					"has gui": false,
+					"update tick": 100000,
+					"update parameter": {
+						"name": "Weight increase",
+						"desc": "As the creature grows, so does its weight.",
+						"data type": "Float",
+						"value": 0,
+						"has gui": false
+					}
+				},
+				{
+					"name":"Age",
+					"desc":"The older, the wiser",
+					"data type": "Integer",
+					"value":0,
+					"has update parameter": true,
+					"has max parameter": false,
+					"has gui": false,
+					"update tick": 100000,
+					"update parameter": {
+						"name": "Growth",
+						"desc": "This creature is slowly growing.",
+						"data type": "Float",
+						"value": 0,
+						"has gui": false
+					}
+				}
+				
+			],"abilities": [
+				
+			]
+		}, 
+		{
+			"name": "Dead",
+			"desc": "This creature is dead.",
+			"has abilities": false,
+			"parameters": [
+				{
+					"name": "Decay",
+					"desc": "A rotting corpse slowly wastes away.",
+					"data type": "Integer",
+					"value": 0,
+					"has update parameter": true,
+					"has max parameter": false,
+					"has gui": false,
+					"update parameter": {
+						"name": "Decay rate",
+						"desc": "Slowly wasting away.",
+						"data type": "Integer",
+						"value": 1,
+						"has update parameter": false,
+						"has max parameter": false,
+						"has gui": false
+					}
+				},
+				{
+					"name": "Meat",
+					"desc": "This creature can be eaten for food by carnivores or omnivores. Small chance of infection if eaten which increases over time.",
+					"data type": "Integer",
+					"value": 100,
+					"has update parameter": true, 
+					"has max parameter": false,
+					"has gui": false,
+					"update parameter": {
+						"name": "Meat decay rate",
+						"desc": "Slowly wasting away.",
+						"data type": "Integer",
+						"value": -1,
+						"has gui": false
+					}
+				}, 
+				{
+					"name": "Undead influence",
+					"desc": "The probability this creature will spawn again as an undead.",
+					"data type": "Integer",
+					"value": 0,
+					"has update parameter": true, 
+					"has max parameter": false,
+					"has gui": false,
+					"update parameter": {
+						"name": "Undead influence increase",
+						"desc": "Dark powers behold this corpse.",
+						"data type": "Integer",
+						"value": 0,
+						"has gui": false
+					}
+				}, 
+				{
+					"name": "Infection probability",
+					"desc": "The probability this creature will infect any creature which eats it.",
+					"data type": "Integer",
+					"value": 0,
+					"has update parameter": true, 
+					"has max parameter": false,
+					"has gui": false,
+					"update parameter": {
+						"name": "Infection probability increase",
+						"desc": "As the corpse rots, bacteria and other potentially contagious agents breed.",
+						"data type": "Integer",
+						"value": 1,
+						"has gui": false
+					}
+				}
+			]
+		},
+		{
+			"name": "Flight",
+			"desc": "This creature is capable of flight",
+			"abilities": true,
+			"parameters": [
+				{
+					"name": "Flying"
+					"desc": "Whether the creature is currently in flight",
+					"data type": "Boolean",
+					"value": false,
+					"has max parameter": false,
+					"has update parameter": false,
+					"has gui": false
+				},
+				{
+					"name": "Flying speed"
+					"desc": "How fast the creature is able to fly. Influenced by both weight and current energy.",
+					"data type": "Float",
+					"value": 2.5,
+					"has max parameter": false,
+					"has update parameter": true,
+					"update parameter": {
+						"name": "Flying speed acceleration",
+						"desc": "Acceleration is the epitome of exhilaration.",
+						"data type": "Integer",
+						"value": 0,
+						"has gui": false
+					}
+				}
+			]
+			"abilities": [
+			
+			]
+		},
+		{
+			"name": "Gargantuan",
+			"desc": "The size of this creature is the stuff of legend.",
+			"parameters": [
+				
+			]
+		}
+		{
+			"name": "Very large",
+			"desc": "As a heavyweight, this creature requires significant energy and food to maintain itself. It also has a lower metabolism, and lower speed as a result.",
+			"parameters": [
+				
+			]
+		},
+		{
+			"name": "Large",
+			"desc": "As a heavyweight, this creature requires significant energy to maintain itself. It also has a lower metabolism, and lower speed as a result.",
+			"parameters": [
+				
+			]
+		},
+		{
+			"name": "Medium",
+			"desc": "This creature is about the size of a human.",
+			"parameters": [
+				
+			]
+		},
+		{
+			"name": "Small",
+			"desc": "This creature is light and is about the same size as a cat.",
+			"parameters": [
+				
+			]
+		},
+		{
+			"name": "Very small",
+			"desc": "This creature is very small and is about the same size as a mouse.",
+			"parameters": [
+				
+			]
+		},
+		{
+			"name": "Tiny",
+			"desc": "This creature is inconspicuous and about the same size as an ant.",
+			"parameters": [
+				
+			]
+		},
+		{
+			"name": "Infected",
+			"desc": "This creature has been infected with an illness.",
+			"parameters": [
+				{
+					"name": "Infection",
+					"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
+					"data type": "Integer",
+					"value": 10,
+					"has update parameter": true,
+					"update parameter": {
+						"name": "Infection spread",
+						"desc": "How quickly infection within the creature spreads.",
+						"data type": "Integer",
+						"value": 3
+					}
+				}
+			]
+		},
+		{
+			"name": "Weakly Infected",
+			"desc": "This creature has been infected with a mild illness.",
+			"parameters": [
+				{
+					"name": "Infection",
+					"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
+					"data type": "Integer",
+					"value": 10,
+					"has update parameter": true,
+					"update parameter": {
+						"name": "Weak infection spread",
+						"desc": "How quickly infection within the creature spreads.",
+						"data type": "Integer",
+						"value": 1
+					}
+				}
+			]
+		}, 
+		{
+			"name": "Contagious Infection",
+			"desc": "This creature has been infected with a highly contagious illness.",
+			"parameters": [
+				{
+					"name": "Infection",
+					"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die. Increases with infection amount.",
+					"data type": "Integer",
+					"value": 10,
+					"has update parameter": true,
+					"update parameter": {
+						"name": "Infection spread",
+						"desc": "How quickly infection within the creature spreads.",
+						"value": 3
+					}
+				}
+			]
+		},
+		{
+			"name": "Strong Infection",
+			"desc": "This creature has been infected with a particularly dangerous infection.",
+			"parameters": [
+				{
+					"name": "Infection",
+					"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
+					"data type": "Integer",
+					"value": 10,
+					"has update parameter": true,
+					"update parameter": {
+						"name": "Infection spread",
+						"desc": "How quickly infection within the creature spreads.",
+						"value": 5
+					}
+				}
+			]
+		},
+		{
+			"name": "Deadly Infection",
+			"desc": "This creature has been infected with a normally terminal infection.",
+			"parameters": [
+				{
+					"name": "Infection",
+					"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
+					"data type": "Integer",
+					"value": 10,
+					"has update parameter": true,
+					"update parameter": {
+						"name": "Infection spread",
+						"desc": "How quickly infection within the creature spreads.",
+						"value": 7
+					}
+				}
+			]
+		},
+		{
+			"name": "Weak immune system",
+			"desc": "This creature has an impaired immune system",
+			"parameters": [
+				{
+					"name": "Immune system ability",
+					"desc": "How well the creature is able to fight off infection.",
+					"data type": "Integer",
+					"value": 1
+				}
+			]
+		}
+		{
+			"name": "Immune system",
+			"desc": "This creature has a dedicated and functional immune system",
+			"parameters": [
+				{
+					"name": "Immune system ability",
+					"desc": "How well the creature is able to fight off infection.",
+					"data type": "Integer",
+					"value": 3
+				}
+			]
+		},
+		{
+			"name": "Strong immune system",
+			"desc": "This creature has an unusually strong immune system able to combat most infections.",
+			"parameters": [
+				{
+					"name": "Immune system ability",
+					"desc": "How well the creature is able to fight off infection.",
+					"data type": "Integer",
+					"value": 6
+				}
+			]
+		},
+		{
+			"name": "Landborne",
+			"desc": "This creature is able to move around places on land",
+			"parameters": [
+				{
+					"name": "Movement speed",
+					"desc": "How quickly the creature can move",
+					"data type": "Float",
+					"value": 2.5
+				}
+			]
+		},
+		{
+			"name": "Seaborne",
+			"desc": "This creature is able to swim in water",
+			"parameters": [
+				{
+					"name": "Water movement speed",
+					"desc": "How quickly the creature can swim",
+					"data type": "Float",
+					"value": 2.5
+				}
+			]
+		},
+		{
+			"name": "Aerobic",
+			"desc": "This creature relies upon oxygen to live.",
+			"parameters": [
+				{
+					"name": "Air supply",
+					"desc": "How much access to oxygen the creature has. If this reaches 0 the creature dies.",
+					"data type": "Float",
+					"value": 100,
+					"has max parameter": true,
+					"has update parameter": true,
+					"update tick": 5,
+					"update parameter": {
+						"name": "Air supply change",
+						"desc": "Decreases whenever the creature is drowning or suffocating",
+						"data type": "Float",
+						"value": 10
+					},
+					"max parameter": {
+						"name": "Max air supply",
+						"desc": "The maximum amount of oxygen supply.",
+						"data type": "Float",
+						"value": 100
+					}
+				}
+			]
+		},
+		{
+			"name": "Gills",
+			"desc": "This creature is able to breathe in water. Suitable for Large, Medium and Small creatures.",
+			"parameters": [
+				{
+					"name": "Weight", 
+					"desc": "Have you seen the scale lately?",
+					"data type": "Integer",
+					"value":1,
+					"has update parameter": true,
+					"has max parameter": false,
+					"has gui": false,
+					"update tick": 100000,
+					"update parameter": {
+						"name": "Weight increase",
+						"desc": "As the creature grows, so does its weight.",
+						"data type": "Float",
+						"value": 0,
+						"has gui": false
+					}
+					
+				}
+			]
+		},
+		{
+			"name": "Lungs",
+			"desc": "This creature has lungs and through this is able to breathe in air.",
+			"parameters": [
+				{
+					"name": "Weight", 
+					"desc": "Have you seen the scale lately?",
+					"data type": "Integer",
+					"value":1,
+					"has update parameter": true,
+					"has max parameter": false,
+					"has gui": false,
+					"update tick": 5,
+					"update parameter": {
+						"name": "Weight increase",
+						"desc": "As the creature grows, so does its weight.",
+						"data type": "Float",
+						"value": 0,
+						"has gui": false
+					}
+					
+				}
+			]
+		}, 
+		{
+			"name": "Hungry",
+			"desc": "A lack of food has resulted in this creature having reduced movement, combat ability and an increased susceptibility to infection."
+		},
+		{
+			"name": "Starving",
+			"desc": "A severe lack of food has resulted in this creature having even more reduced movement, combat ability and an even more increased susceptibility to infection. Further lack of food will result in death."
+		},
+		{
+			"name": "Thirsty",
+			"desc": "A lack of water has resulted in this creature having reduced movement, combat ability and an increased susceptibility to infection."
+		},
+		{
+			"name": "Very thirsty",
+			"desc": "A severe lack of food has resulted in this creature having even more reduced movement, combat ability and an even more increased susceptibility to infection. Further lack of food will result in death."
+		},
+		{
+			"name": "Tired",
+			"desc": "This creature is tired and wants to rest. Reduced movement, energy usage and combat ability."
+		},
+		{
+			"name": "Requires food",
+			"desc": "This creature requires food to survive.",
+			"has abilities": true,
+			"parameters": [
+				{
+					"name": "Hunger",
+					"desc": "How much this creature requires food",
+					"data type": "Integer",
+					"value":0,
+					"has update parameter": true,
+					"has max parameter": false,
+					"has gui": false,
+					"update tick": 1000,
+					"update parameter": {
+						"name": "Hunger increase",
+						"desc": "Natural requirements for food necessitate this.",
+						"data type": "Float",
+						"value": 10,
+						"has gui": false
+					}
+				}
+			],
+			"abilities": [
+				{
+					"_comment": "ability to eat goes here"
+				}
+			]
+		},
+		{
+			"name": "Requires water",
+			"desc": "This creature requires water to survive.",
+			"parameters": [
+				{
+					"name": "Thirst",
+					"desc": "How much this creature requires water",
+					"data type": "Integer",
+					"value":0,
+					"has update parameter": true,
+					"has max parameter": false,
+					"has gui": false,
+					"update tick": 1000,
+					"update parameter": {
+						"name": "Thirst increase",
+						"desc": "Natural requirements for water necessitate this.",
+						"data type": "Float",
+						"value": 10,
+						"has gui": false
+					}
+				}
+			],
+			"abilities": [
+				{
+					"_comment": "ability to eat goes here"
+				}
+			]
+		},
+		{
+			"name": "Omnivore",
+			"desc": "This creature is able to digest both animal and plant matter."
+		},
+		{
+			"name": "Herbivore",
+			"desc": "This creature is able to digest only plant matter."
+		}, 
+		{
+			"name": "Carnivore",
+			"desc": "This creature is able to digest only animal matter."
+		},
+		{
+			"name": "Hive-minded",
+			"desc": "This creature operates under a hive system, where the queen replicates the species while workers maintain and defend the hive.",
+			"parameters": [
+				{
+					"name": "Queen",
+					"desc": "Whether a creature is a queen",
+					"data type": "Boolean",
+					"value": false
+				},
+				{
+					"name": "Hive split ratio",
+					"desc": "The optimal ratio of workers to queens within the population",
+					"data type": "Float",
+					"value": 32
+				}
+			]
+		},
+		{
+			"name": "Territorial",
+			"desc": "This creature operates under a system of territorial aggression, where a select few of its own are allowed into specific designated territory. Trespassing will cause retaliation.",
+			"parameters": [
+				{
+					"name": "Territorial range",
+					"desc": "The range under which the creature asserts its territory."
+				}
+			]
+		},
+		{
+			"name": "Caring",
+			"desc": "This creature cares after its young.",
+			"parameters": [
+				{
+					"name": "Age of care",
+					"desc": "The age up to which the creature will care for its young."
+				}
+			]
+		}
+		
+    ]
+}
