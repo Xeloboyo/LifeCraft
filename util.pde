@@ -802,3 +802,38 @@ String generateId(){
 HashMap<String, Integer> actionWeights = new HashMap();
 
 float[] rand = new float[100];
+
+boolean isNumber(String s){
+  if(s.isEmpty()){return false;}
+  for(int i = 0;i<s.length();i++){
+    if(s.charAt(i)<'0'||s.charAt(i)>'9'){
+      if(i==0&&s.charAt(i)=='-'&&s.length()>1){
+        continue;
+      }
+      if(i>0&&s.charAt(i)=='.'&&s.length()>1){
+        continue;
+      }
+      return false;
+    }
+  }
+  return true;
+}
+
+String getClip(){
+
+  Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+  try{
+  return (String)clipboard.getData(DataFlavor.stringFlavor);
+  }catch(Exception e){}
+  return "";
+ 
+ }
+ 
+
+ 
+void copyToClip(String s){
+   StringSelection selection = new StringSelection(s);
+  Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+  clipboard.setContents(selection, selection);
+ 
+ }
