@@ -13,7 +13,9 @@ class Organism {
     JSONObject species; 
     String filename;
     int evopoints;
-    //If goes to zero creature dies.
+    //These are necessary for position.
+    float x;
+    float y;
     
     //Traits/body parts determine how the thing works: the specific trait
     //influences gameplay
@@ -34,7 +36,10 @@ class Organism {
        
     }
 }
-
+class OrganismManager {
+   public ArrayList<Organism> organisms=new ArrayList();
+   
+}
 
 
 class Ability {

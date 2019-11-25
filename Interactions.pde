@@ -51,7 +51,7 @@ class Interaction {
           passin[i]=o.parameters.get(interactingParameters.get(i)).paramValue.toString();
           passinnames[i]=o.parameters.get(interactingParameters.get(i)).name;
       }
-      p=passValues(passinnames,passin,prog);
+      injectVariable(passinnames,passin,p);
       p.functions.add(defaultFunctions);
       while (!p.finished||!p.errored) {
           p.runCycle();
@@ -125,8 +125,4 @@ class Interaction {
          }
 
    }
-}
-//This is used to manage the priority of interactions (e.g. whether an interaction will occur as dependent on the location of an organism etc.)
-class InteractionManager {
-      
 }
