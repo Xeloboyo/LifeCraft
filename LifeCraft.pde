@@ -6,8 +6,9 @@ PImage output;
 PeasyCam p;
 SpriteBatch tileBatch;
 void setup(){
-  System.setProperty("user.dir","C:\\Users\\Maks\\Documents\\GitHub\\LifeCraft\\");
-  sysdir=System.getProperty("user.dir");
+  
+  sysdir=sketchPath("\\");
+  initialiseGUI();
   Trait alive=new Trait("data\\traits",0);
   println(alive.name);
   for (int i=-3; i<=3; i++){for (int j=-3; j<=3; j++){toal+=1f/(dist(i,j,0,0)+0.5);}}
