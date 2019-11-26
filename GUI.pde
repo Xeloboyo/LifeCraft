@@ -1564,3 +1564,55 @@ class TextureSelect extends Component{
      popMatrix();
    }
 }
+class Label extends Component {
+  String id;
+  InputEvent ie = new InputEvent(){
+  void onMousePressed(Component c){}
+  void onKeyPressed(Component c){}
+  };
+  SyncEvent se = new SyncEvent(){
+    void onSync(Object value, Component  c){ c.value = value;}
+  };
+  String label;
+  color base = color(235),contrast = color(50),saturate=color(255,100,100);
+  boolean active;
+  boolean visible = true;
+  boolean enabled = true;
+  Object value=null;
+  boolean valid = false;
+   Label(String id,float x, float y, float w, float h,String label){
+     super(id);
+     this.x=x;
+     this.y=y;
+     this.w=w;
+     this.h=h;
+     this.label=label;
+   }
+  
+  void draw() {
+    text(label,x,y,w,h);
+  }
+  void update() {
+    
+  }
+  
+  boolean onclick(int button, int mx, int my) {
+    return false;
+  }
+  boolean onhover(int mx, int my) {
+    return false;
+  }
+  boolean onKeyPress(char key, int keycode) {
+    return false;
+  }
+  void updateValid() {
+    
+  }
+  String stringify(){return value.toString();}
+  void drawOntop(){};
+  boolean onDrag(int button, int mx, int my){return false;
+};
+  Component clone() {
+    return null;
+  }
+}

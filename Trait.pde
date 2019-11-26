@@ -167,13 +167,6 @@ class Parameter {
             break;
         }
     }
-    //TODO
-    void loadDisplay(String displayLocation, int displayIndex) {  
-        //Load display details from JSON (e.g. GUI elements etc.)
-        //Generic types such as hp bars, text statuses etc. will be handled in display parameter method.
-        //Will also include type for displaying animations on organisms.
-        //Will only display if particular species has this particular parameter.
-    }
     void loadParameter(JSONObject obj) {
          //Recommended: use _change to indicate that an already existing parameter is to be changed. 
           name=getStringJSON(obj,"name_not_found","name");
@@ -224,7 +217,6 @@ class Parameter {
           if (hasGui) {
               String displayLocation=obj.getString("gui location","file not found");
               int displayIndex=obj.getInt("gui location index");
-              loadDisplay(displayLocation,displayIndex);
           }
     }
     void changeBy(Parameter p) {

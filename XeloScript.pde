@@ -3,15 +3,6 @@ import java.util.*;
 abstract class FunctionExecutor{
   abstract String[] execute(String cmd, String[] params);
 }
-//Function for passing in values into a program.
-void injectVariable(String[] variableName, String[] values, Program program) {
-    for (int i=0; i<variableName.length; i++) {
-      JSONObject jo = new JSONObject();
-          jo.setString("value",values[i]);
-          jo.setInt("depth",0);
-          program.memory.setJSONObject(variableName[i],jo);
-    }
-}
 
 
 void injectVariable(String[] variableName, String[] values, Program program) {
@@ -184,13 +175,326 @@ FunctionExecutor defaultFunctions = new FunctionExecutor(){
           }
           
           return new String[]{"[\""+deliminate(tf,"\",\"")+"\"]",""};
+        case "split":
+          if(params.length<2){
+            return new String[]{"","| error in contains , insufficent arguments|"};
+          }
+          return params[0].split(params[1]);
+        case "script":
+          String prog=getFile(params[0]);
+          Program p=new Program(prog);
+          if (params.length%2==0) {
+              return new String[]{"Incorrect number of arguments"};
+          }
+          String[] arguments=new String[(params.length-1)/2];
+          for (int i=1; i<(params.length-1)/2+1; i++) {
+              arguments[i-1]=params[i];
+          }
+          String[] parameters=new String[(params.length-1)/2];
+          for (int i=(params.length-1)/2+1; i<params.length; i++) {
+              arguments[i-((params.length-1)/2+1)]=params[i];
+          }
+          injectVariable(arguments,parameters,p);
+          p.functions.add(gameFunctions);
+          while (!p.finished||!p.errored) {
+              p.runCycle();
+          }
+          return new String[]{p.returnvalue};
+      }
+      
+      return null;
+    }
+  };
+FunctionExecutor gameFunctions = new FunctionExecutor(){
+    public String[] execute(String cmd, String[] params){
+      //println(cmd,Arrays.toString(params));
+      switch(cmd){
+        case "PRINT":
+          println("SCRIPT:   "+(params.length==1?params[0]:deliminate(params," ")));
+          return new String[]{"",""};
+        case "charAt":
+          boolean aint = isInt(params[0]);
+          String str = params[0];
+          if(!aint){
+            str = trimEnds(str);
+          }
+          if(!isInt(params[1])){
+            return new String[]{"","| error in charAt, "+params[1]+" cannot be recognised as number|"};
+          }
+          try{
+            return new String[]{"\""+str.charAt(int(params[1]))+"\"",""};
+          }catch(Exception e){return new String[]{"","| error in charAt,"+e.toString()+"|"};}
+        case "sign":
+          aint = isInt(params[0]);
+          if(!aint){
+            return new String[]{"","| error in sign, "+params[0]+" cannot be recognised as number|"};
+          }
+          if(int(params[1])==0){
+            return new String[]{"0",""};
+          }
+          return new String[]{""+int(params[0])/abs(int(params[0])),""};
+        case "abs":
+          aint = isInt(params[0]);
+          if(!aint){
+            return new String[]{"","| error in abs, "+params[0]+" cannot be recognised as number|"};
+          }
+          
+          return new String[]{""+abs(int(params[0])),""};  
+        case "constrain":
+          aint = isInt(params[0])&&isInt(params[1])&&isInt(params[2]);
+          if(!aint){
+            return new String[]{"","| error in constrain, one or more paramters: "+params[0]+params[1]+params[2]+" cannot be recognised as a number|"};
+          }
+          return new String[]{""+constrain(int(params[0]),int(params[1]),int(params[2])),""};  
+        case "min": //expand to be 2 or more later
+          aint = isInt(params[0])&&isInt(params[1]);
+          if(!aint){
+            return new String[]{"","| error in min, one or more paramters: "+params[0]+params[1]+" cannot be recognised as a number|"};
+          }
+          return new String[]{""+min(int(params[0]),int(params[1])),""};    
+        case "max": //expand to be 2 or more later
+          aint = isInt(params[0])&&isInt(params[1]);
+          if(!aint){
+            return new String[]{"","| error in max, one or more paramters: "+params[0]+params[1]+" cannot be recognised as a number|"};
+          }
+          return new String[]{""+max(int(params[0]),int(params[1])),""};      
+        case "arrayFill":
+          aint = isInt(params[0]);
+          if(!aint){
+            return new String[]{"","| error in arrayFill , "+params[0]+" cannot be recognised as number  for array length|"};
+          }
+          if(int(params[0])<=0){
+            return new String[]{"","| error in arrayFill , array length cannot be "+params[0]+"|"};
+          }
+          
+          String[] tf = new String[int(params[0])];
+          for(int i = 0;i<tf.length;i++){
+            tf[i] = params[1];
+          }
+          
+          return new String[]{"["+deliminate(tf,",")+"]",""};
+        case "setLength":
+          //println("setlength",Arrays.toString(params));
+          if(!isArray(params[0])){
+            return new String[]{"","| error in setLength , "+params[0]+" cannot be recognised as an array|"};
+          }
+        
+          aint = isInt(params[1]);
+          if(!aint){
+            return new String[]{"","| error in setLength , "+params[1]+" cannot be recognised as number  for array length|"};
+          }
+          if(int(params[1])<=0){
+            return new String[]{"","| error in setLength , array length cannot be "+params[1]+"|"};
+          }
+          String array[] = splitArray(params[0]);
+          tf = new String[int(params[1])];
+          for(int i = 0;i<tf.length;i++){
+            if(i>= array.length){
+              tf[i]=params.length>2?params[2]:"\"\"";
+              continue;
+            }
+            tf[i] =  array[i];
+          }
+          
+          return new String[]{"["+deliminate(tf,",")+"]",""};  
+        case "arrayMergeOperate":
+          //println("setlength",Arrays.toString(params));
+          if(!isArray(params[0])){
+            return new String[]{"","| error in setLength , "+params[0]+" cannot be recognised as an array|"};
+          }
+          array = splitArray(params[0]);
+          if(array.length<=1){
+            return new String[]{array[0],""};    
+          }
+          String current=evalArtithmetic(array[0],params[1],array[1]);
+          if(array.length>2){
+            for(int i = 2;i<array.length;i++){
+              current=evalArtithmetic(current,params[1],array[1]);
+            }
+          }
+          return new String[]{current,""};    
+          
+          
+        case "len":
+          //println("setlength",Arrays.toString(params));
+          if(params.length<1){
+            return new String[]{"","| error in len , insufficent arguments|"};
+          }
+          if(!isArray(params[0])){
+            return new String[]{"","| error in count , "+params[0]+" cannot be recognised as an array|"};
+          }
+          array = splitArray(params[0]);
+          int len = array[0].length()>0?array.length:0;
+          return new String[]{""+len,""};  
+        case "count":
+          //println("setlength",Arrays.toString(params));
+          if(params.length<2){
+            return new String[]{"","| error in count , insufficent arguments|"};
+          }
+          if(!isArray(params[0])){
+            return new String[]{"","| error in count , "+params[0]+" cannot be recognised as an array|"};
+          }
+          array = splitArray(params[0]);
+          int count = 0;
+          for(int i = 0;i< array.length;i++){
+            if(array[i].equals(params[1])){
+              count++;
+            }
+          }
+          return new String[]{""+count,""};
+        case "contains":
+          //println("setlength",Arrays.toString(params));
+          if(params.length<2){
+            return new String[]{"","| error in contains , insufficent arguments|"};
+          }
+          if(!isArray(params[0])){
+            return new String[]{"","| error in contains , "+params[0]+" cannot be recognised as an array|"};
+          }
+          array = splitArray(params[0]);
+          
+          for(int i = 0;i< array.length;i++){
+            if(array[i].equals(params[1])){
+              return new String[]{"\"true\"",""};  
+            }
+          }
+          return new String[]{"\"false\"",""};   
+        case "toCharArray":
+          String raw = toRaw(params[0]);
+          tf = new String[raw.length()];
+          for(int i = 0;i<tf.length;i++){
+            tf[i] = raw.charAt(i)+"";
+          }
+          
+          return new String[]{"[\""+deliminate(tf,"\",\"")+"\"]",""};
+        //This is used to run another named script (by filename), and returns the return value of that script. 
+        //The arguments are as follows: 
+        //1st argument is filename
+        //next (n-1)/2 arguments are variable names
+        case "script":
+          String prog=getFile(params[0]);
+          Program p=new Program(prog);
+          if (params.length%2==0) {
+              return new String[]{"Incorrect number of arguments"};
+          }
+          String[] arguments=new String[(params.length-1)/2];
+          for (int i=1; i<(params.length-1)/2+1; i++) {
+              arguments[i-1]=params[i];
+          }
+          String[] parameters=new String[(params.length-1)/2];
+          for (int i=(params.length-1)/2+1; i<params.length; i++) {
+              parameters[i-((params.length-1)/2+1)]=params[i];
+          }
+          injectVariable(arguments,parameters,p);
+          p.functions.add(gameFunctions);
+          while (!p.finished||!p.errored) {
+              p.runCycle();
+          }
+          return new String[]{p.returnvalue,""};
+        //Script functions to implement:
+        //Get distance to nearest of visible named organisms from a point
+        //x,y,name
+        case "distanceToNearestNamedOrganismFrom":
+          if (params.length<3){
+             return new String[]{"","| error in distanceToNearestNamedOrganismFrom , insufficent arguments|"};
+          } else if (params.length>3){
+             return new String[]{"","| error in distanceToNearestNamedOrganismFrom , too many arguments|"};
+          }
+          if (!isNumber(params[0])||!isNumber(params[1])) {
+              return new String[]{"","| error in distanceToNearestNamedOrganismFrom , position is not a vector of numbers|"};
+          } 
+          if (!OrganismManager.species.contains(params[2])) {
+             return new String[]{"","| error in distanceToNearestNamedOrganismFrom , species not recognised|"};
+          }
+          float[] closest={OrganismManager.organisms.get(params[2]).get(0).x,OrganismManager.organisms.get(params[2]).get(0).y};
+          for (Organism o: OrganismManager.organisms.get(params[2])) {
+             if (pow(closest[0]-int(params[0]),2)+pow(closest[1]-int(params[1]),2)>pow(o.x-int(params[0]),2)+pow(o.y-int(params[1]),2)){
+                 closest[0]=o.x;
+                 closest[1]=o.y;
+             }
+          }
+          
+          return new String[]{Float.toString(sqrt(pow(closest[0]-int(params[0]),2)+pow(closest[1]-int(params[1]),2)))};
+        //Get location of nearest visible named organisms
+        //First two arguments are the position which you are testing
+        //Last argument is the species you're testing for.
+        case "locationOfNearestNamedOrganism":
+        if (params.length<3){
+             return new String[]{"","| error in distanceToNearestNamedOrganismFrom , insufficent arguments|"};
+          } else if (params.length>3){
+             return new String[]{"","| error in distanceToNearestNamedOrganismFrom , too many arguments|"};
+          }
+          if (!isNumber(params[0])||!isNumber(params[1])) {
+              return new String[]{"","| error in distanceToNearestNamedOrganismFrom , position is not a vector of numbers|"};
+          } 
+          if (!OrganismManager.species.contains(params[2])) {
+             return new String[]{"","| error in distanceToNearestNamedOrganismFrom , species not recognised|"};
+          }
+          float[]closestCreature={OrganismManager.organisms.get(params[2]).get(0).x,OrganismManager.organisms.get(params[2]).get(0).y};
+          for (Organism o: OrganismManager.organisms.get(params[2])) {
+             if (pow(closestCreature[0]-int(params[0]),2)+pow(closestCreature[1]-int(params[1]),2)>pow(o.x-int(params[0]),2)+pow(o.y-int(params[1]),2)){
+                 closestCreature[0]=o.x;
+                 closestCreature[1]=o.y;
+             }
+          }
+          return new String[]{Float.toString(closestCreature[0])+","+Float.toString(closestCreature[1]),""};
+        //Get velocities and locations of visible named organisms within a certain radius of a point.
+        //Return arguments are first location, first velocity, second location, second velocity etc.
+        //Arguments are:
+        //x,y,species name,range.
+        case "getNamedCreaturesWithinRange":
+          ArrayList<String> returnValues=new ArrayList();
+          if (params.length<4){
+             return new String[]{"","| error in distanceToNearestNamedOrganismFrom , insufficent arguments|"};
+          } else if (params.length>4){
+             return new String[]{"","| error in distanceToNearestNamedOrganismFrom , too many arguments|"};
+          }
+          if (!isNumber(params[0])||!isNumber(params[1])) {
+              return new String[]{"","| error in distanceToNearestNamedOrganismFrom , positions are not numbers|"};
+          } 
+          if (!OrganismManager.species.contains(params[2])) {
+             return new String[]{"","| error in distanceToNearestNamedOrganismFrom , species not recognised|"};
+          }
+          if (!isNumber(params[3])) {
+             return new String[]{"","| error in distanceToNearestNamedOrganismFrom , range is not number!|"};
+          }
+          for (Organism o: OrganismManager.organisms.get(params[2])) {
+             if (pow(o.x-int(params[0]),2)+pow(o.y-int(params[1]),2)<int(params[3])){
+               returnValues.add(o.x+","+o.y+","+o.velX+","+o.velY+";");
+             }
+          }
+          String returnArray=" ";
+          for (int i=0; i<returnValues.size(); i++) {
+            returnArray=returnArray+returnValues.get(i);
+          }
+          return new String[]{returnArray,""};
+        //Get terrain type in visible location.
+        case "getTerrain":
+          if (params.length<2){
+             return new String[]{"","| error in getTerrain, insufficent arguments|"};
+          } else if (params.length>2) {
+            return new String[]{"","| error in getTerrain, too many arguments|"};
+          }
+          if (!isNumber(params[0])||!isNumber(params[1])) {
+            return new String[]{"","| error in getTerrain, positions are not numbers|"};
+          }
+          return new String[]{getTile(int(params[0]),int(params[1])).tp.name};
+        //Get whether named species has named trait
+        //Argument 1=species
+        //Argument 2=name of trait
+        case "hasTrait":
+          if (!OrganismManager.species.contains(params[0])) {
+             return new String[]{"","| error in distanceToNearestNamedOrganismFrom , species not recognised|"};
+          }
+          if (!OrganismManager.organisms.get(params[0]).get(0).species.contains(params[1])){
+              return new String[]{"\"false\"",""};
+          }
+          return new String[]{"\"true\"",""};
         
       }
       
       return null;
     }
   };
-
 
 
 class ProgramLine{
