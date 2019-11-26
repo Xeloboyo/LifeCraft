@@ -366,11 +366,6 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
           }
           
           return new String[]{"[\""+deliminate(tf,"\",\"")+"\"]",""};
-        case "split":
-          if(params.length<2){
-            return new String[]{"","| error in contains , insufficent arguments|"};
-          }
-          return params[0].split(params[1]);
         //This is used to run another named script (by filename), and returns the return value of that script. 
         //The arguments are as follows: 
         //1st argument is filename
@@ -394,7 +389,7 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
           while (!p.finished||!p.errored) {
               p.runCycle();
           }
-          return new String[]{p.returnvalue};
+          return new String[]{p.returnvalue,""};
         //Script functions to implement:
         //Get distance to nearest of visible named organisms from a point
         //x,y,name
@@ -441,7 +436,7 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
                  closestCreature[1]=o.y;
              }
           }
-          return new String[]{Float.toString(closestCreature[0]),Float.toString(closestCreature[1])};
+          return new String[]{Float.toString(closestCreature[0])+","+Float.toString(closestCreature[1]),""};
         //Get velocities and locations of visible named organisms within a certain radius of a point.
         //Return arguments are first location, first velocity, second location, second velocity etc.
         //Arguments are:
@@ -464,10 +459,14 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
           }
           for (Organism o: OrganismManager.organisms.get(params[2])) {
              if (pow(o.x-int(params[0]),2)+pow(o.y-int(params[1]),2)<int(params[3])){
-               returnValues.add(o.x+","+o.y+","+o.velX+","+o.velY);
+               returnValues.add(o.x+","+o.y+","+o.velX+","+o.velY+";");
              }
           }
-          break;
+          String returnArray=" ";
+          for (int i=0; i<returnValues.size(); i++) {
+            returnArray=returnArray+returnValues.get(i);
+          }
+          return new String[]{returnArray,""};
         //Get terrain type in visible location.
         case "getTerrain":
           if (params.length<2){
