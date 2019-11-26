@@ -47,6 +47,7 @@ void setup(){
 
 
 TerrainTile [][] land;
+String[][] biome;
 int w,h;
 float scale = 70,chaos, ruggedness = 3, biomeoffset;
 float dryness = 0.25;
@@ -173,7 +174,7 @@ void generate(int w,int h){
   this.w=w;
   this.h=h;
   land = new TerrainTile[w][h];
-  
+  biome = new String[w][h];
   //setting base terrain
   for (int i=0; i<land.length; i++)
     {

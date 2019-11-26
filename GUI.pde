@@ -1,14 +1,7 @@
 
 
 boolean CONTROLPRESSED;
-boolean isNumber(String s) {
-     for (int i=0; i<s.length(); i++) {
-         if (!Character.isDigit(s.charAt(i))) {
-            return false; 
-         }
-     }
-     return true;
-  }
+
 class GUIHandler{
   ArrayList<Component> comps = new ArrayList();
   ArrayList<Component> compsToAdd = new ArrayList();
@@ -302,7 +295,8 @@ class TextBox extends Component{
    boolean onKeyPress(char key, int keycode){
      ie.onKeyPressed(this);
      
-     /*if(CONTROLPRESSED){
+
+     if(CONTROLPRESSED){
        println(key,keycode);
        if(key == 'c'){
          copyToClip(label);
@@ -324,7 +318,7 @@ class TextBox extends Component{
        }
        
        return true;
-     }*/
+     }
      if(key == CODED){
        switch(keycode){
          case LEFT:
