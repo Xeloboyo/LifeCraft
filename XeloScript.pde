@@ -374,7 +374,7 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
           String prog=getFile(params[0]);
           Program p=new Program(prog);
           if (params.length%2==0) {
-              return new String[]{"Incorrect number of arguments"};
+              return new String[]{"","error| Incorrect number of arguments|"};
           }
           String[] arguments=new String[(params.length-1)/2];
           for (int i=1; i<(params.length-1)/2+1; i++) {
@@ -462,7 +462,7 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
                returnValues.add(o.x+","+o.y+","+o.velX+","+o.velY+";");
              }
           }
-          String returnArray=" ";
+          String returnArray="";
           for (int i=0; i<returnValues.size(); i++) {
             returnArray=returnArray+returnValues.get(i);
           }
