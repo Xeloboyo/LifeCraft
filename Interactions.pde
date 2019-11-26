@@ -91,8 +91,7 @@ class Interaction {
         while((t=br.readLine())!=null){
             JSONWHOLE=JSONWHOLE.concat(t+"\n");
         } 
-        JSONObject all = parseJSONObject(JSONWHOLE);
-        
+        br.close();
         JSONArray interactions = parseJSONArray("interactions");
         
         JSONObject interaction = (JSONObject) interactions.get(index);

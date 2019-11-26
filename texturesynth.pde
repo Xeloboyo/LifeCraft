@@ -66,7 +66,7 @@ int[] CoherentSynthesis(int[] sample, int SW, int SH, ArrayList<Integer> sets, i
   }
 
 
-static List<Integer>[] Analysis(int[] bitmap, int width, int height, int K, int N, bool indexed)
+List<Integer>[] Analysis(int[] bitmap, int width, int height, int K, int N, boolean indexed)
   {
     int area = width * height;
     ArrayList<Integer> result[] = new ArrayList[area];

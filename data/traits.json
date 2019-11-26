@@ -1,7 +1,7 @@
 {
     "traits": [
 		{	"name": "Base", 
-			"desc": "The basic features of any organism.",
+			"desc": "The basic features of any organism. If this is not present, we are in quite a buggy situation my friend.",
 			"has abilities": false,
 			"parameters": [
 				{
@@ -108,7 +108,7 @@
 		},
 		{	
 			"name": "Undead",
-			"desc": "This creature is a member of the undead, and thus to maintain themselves must look to the living. However, they are less affected by damage, do not suffer infections, have a chance to resurrect and are able to spread undead influence.",
+			"desc": "This creature is a member of the undead, and thus to maintain themselves must look to the living. However, they are less affected by damage, effectively immortal, have a chance to resurrect and are able to spread undead influence.",
 			"has abilities": true,
 			"parameters": [
 				{	
@@ -897,7 +897,15 @@
 					"value": -1
 				}
 			]
-		}
+		}, 
+		{
+			"name":"No climate preference",
+			"desc":"This creature has no climate preference, and will function just as well in all environments."
+		},
+		{
+			"name": "Temperate preference",
+			"desc": "This creature prefers a temperate climate."
+		},
 		
     ]
 }
