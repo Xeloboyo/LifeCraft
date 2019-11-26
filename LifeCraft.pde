@@ -24,7 +24,7 @@ void setup(){
   output = terrainToImage();
   p  = new PeasyCam(this, 400);
   tiles = loadImage("tiles.png");
-  tileBatch = new SpriteBatch(20000);
+  tileBatch = new SpriteBatch(50000);
   tileBatch.addSprite("dirt",tiles.get(32,32,32,32));
   tileBatch.addSprite("grass",tiles.get(0,0,32,32));
   tileBatch.addSprite("sand",tiles.get(0,32,32,32));
@@ -126,7 +126,7 @@ class TerrainTile{
       tp = terrainTypes.get("dirt");
     }
     
-    if(tp.name.equals("dirt") &&(moisture<0.05)){
+    if(tp.name.equals("dirt") &&(moisture<0.01)){
       tp = terrainTypes.get("arid dirt");
     }
     if(tp.name.equals("arid dirt") &&(moisture>0.08)){
@@ -147,13 +147,16 @@ class TerrainTile{
     if(tp.name.equals("grass") && moisture<0.2&&moisture>0.1&&soilcover>5&&temp>0&&temp<30){
       tp = terrainTypes.get("forest");
     }
-    
+    if(tp.name.equals("forest") && (moisture<=0.1||temp<0||temp>30)){
+      tp = terrainTypes.get("grass");
+      moisture+=0.05;
+    }
     if(tp.name.equals("grass") && (moisture<0.04||temp<0||temp>40)){
       tp = terrainTypes.get("arid dirt");
       moisture+=0.05;
     }
     
-    if(moisture>0.05&&temp>0){
+    if(moisture>0.02&&temp>0){
       if(tp.name.equals("dirt")){
         tp = terrainTypes.get("grass");
       }
@@ -177,6 +180,7 @@ void generate(int w,int h){
   land = new TerrainTile[w][h];
   biome = new String[w][h];
   //setting base terrain
+  println("setting base terrain");
   for (int i=0; i<land.length; i++)
     {
         for (int j=0; j<land[i].length; j++)
@@ -227,25 +231,36 @@ void generate(int w,int h){
         }
     }
     //stabilising water & large scale erosion
-    int steps = 300;
+    int steps = 30;
     
-    println("stablising water");
+    
     for (int z=0; z<steps; z++){
-      settleWater();
+      println("stablising climate: "+nf(100*z/steps,0,2)+"%");
+      for (int i=0; i<10; i++){
+        settleWater();
+        
+      }
+      for(int i =0;i<2;i++){
+        EvolveLandscape();
+      }
+      reassignAll();
     }  
-     println("reseting types");
-    reassignAll();
-     println("checking biomes");
+    
+    println("checking biomes");
     analyseBiome();
+    println("filling gaps");
+    forceBiomeBoundaries();
+    println("checking static biomes");
+    analyseStaticBiome();
 }
 void reassignAll(){
   for (int i=0; i<land.length; i++)
     {
-        for (int j=0; j<land[i].length; j++)
-        {
-          land[i][j].assignToType();
-        }
+      for (int j=0; j<land[i].length; j++)
+      {
+        land[i][j].assignToType();
       }
+    }
 }
 void erode(){
   int steps = 50;
@@ -334,6 +349,31 @@ void erode(){
   }
   
 }
+
+void EvolveLandscape(){
+  for (int i=1; i<land.length-1; i++)
+  {
+    for (int j=1; j<land[i].length-1; j++)
+    {
+      float water = getRatio(i,j,1,"water");
+      float forest = getRatio(i,j,1,"forest");
+      float grass = getRatio(i,j,1,"grass");
+      float sand = getRatio(i,j,1,"sand");
+      if(water>0&&sand>0.0&&forest<0.3&&(!land[i][j].tp.name.equals("water"))){
+        land[i][j].tp = terrainTypes.get("sand");
+      }
+      if(forest>0.3&&(land[i][j].tp.name.equals("sand"))){
+        land[i][j].tp = terrainTypes.get("arid dirt");
+        land[i][j].moisture*=0.7;
+      }
+      if(grass>0.7&&(land[i][j].tp.name.equals("sand"))){
+        land[i][j].tp = terrainTypes.get("arid dirt");
+        land[i][j].moisture*=0.7;
+      }
+    }
+  }
+}
+
 void settleWater(){
   float[][] newheight = new float[w][h],newwater = new float[w][h];
   for (int i=1; i<land.length-1; i++)
@@ -427,7 +467,7 @@ void settleWater(){
 
 
 float getRatio(int x,int y,int r,String type){
-  int count=0;
+  float count=0;
   for (int i=x-r; i<=x+r; i++)
   {
     for (int j=y-r; j<=y+r; j++)
@@ -438,7 +478,60 @@ float getRatio(int x,int y,int r,String type){
   return count/sqrd(2*r+1);
 }
 
-
+//just a float wrapper lmao
+class Count{int c=0; void inc(){c++;}}
+void forceBiomeBoundaries(){
+  
+  HashMap<String,Count> biomes;
+  biomes = new HashMap();
+  int supercount = 1;
+  while(supercount>0){
+    supercount = 0;
+    String[][] newbiome = new String[w][h];
+    for (int i=0; i<land.length; i++)
+    {
+      for (int j=0; j<land[i].length; j++)
+      {
+        for(String s:biomes.keySet()){
+          biomes.get(s).c=0;
+        }
+        int atotal = 0;
+        int acount = 0;
+        for (int a=max(0,i-1); a<=min(w-1,i+1); a++)
+        {
+          for (int b=max(0,j-1); b<=min(h-1,j+1); b++)
+          {
+            if(biome[a][b]!="none"&&biome[i][j]!=null){
+              if(!biomes.containsKey(biome[a][b])){
+                biomes.put(biome[a][b], new Count());
+              }
+              biomes.get(biome[a][b]).inc();
+              acount++;
+            }
+            atotal++;
+          }
+        }
+        int maxcount=-1;
+        String biomehigh="";
+        if((biome[i][j]=="none"||biome[i][j]==null)&&acount>0){
+          for(String s:biomes.keySet()){
+            if(biomes.get(s).c>maxcount){
+              biomehigh = s;
+              maxcount = biomes.get(s).c;
+            }
+          }
+          newbiome[i][j] = biomehigh;
+        }else{
+          newbiome[i][j] = biome[i][j]==null?"none":biome[i][j];
+        }
+        
+        supercount+=(atotal-acount);
+      }
+    }
+    biome = newbiome;
+    println(supercount);
+  }
+}
 void analyseBiome(){
   for (int i=0; i<land.length; i++)
   {
@@ -449,38 +542,81 @@ void analyseBiome(){
       
       float grass = getRatio(i,j,5,"grass");
       float sand = getRatio(i,j,5,"sand");
+      float rock = getRatio(i,j,5,"rock");
+      float snow = getRatio(i,j,5,"snow");
       float water = getRatio(i,j,5,"water");
       float forest = getRatio(i,j,5,"forest");
       float drydirt = getRatio(i,j,5,"arid dirt");
       
-      if(tt.height>30){
-        biome[i][j] = "highlands";
-      }else{
-        if(sand>0.7){
+      
+        if(sand>0.65){
           biome[i][j] = "desert";
+          if(water>0.0&&getRatio(i,j,1,"grass")>0){
+            biome[i][j] = "oasis";
+          }
         }
+        
+        
         if(forest>0.3&&water<0.3){
           biome[i][j] = "forest";
         }
-        if(grass>0.7){
+        else if(grass>0.55){
           biome[i][j] = "grassland";
-        }else if(water>0.4 && grass+water>0.8){
+        }else if(water>0.2 && forest+grass+water>0.8 && sand<0.1){
           biome[i][j] = "wetland";
         }
-        if(getRatio(i,j,5,"water")>0.9){
-          biome[i][j] = "deepwater";
+        
+        if(drydirt>0.7){
+          biome[i][j] = "arid flats";
         }
-        else if(land[i][j].tp.name.equals("water")){
-          biome[i][j] = "shallowwater";
+        
+      
+      
+      
+      if(land[i][j].tp.name.equals("rock")){
+        if(water>0.3){
+          biome[i][j] = "crags";
         }
         
       }
       
+      if(tt.height>30&&rock+snow>0.2){
+        
+        biome[i][j] = "mountains";
+      }
       
     }
   }
 }
 
+
+void analyseStaticBiome(){
+  for (int i=0; i<land.length; i++)
+  {
+    for (int j=0; j<land[i].length; j++)
+    {
+      TerrainTile tt = land[i][j];
+      float water = getRatio(i,j,5,"water");
+      float ice = getRatio(i,j,3,"ice");
+      if(tt.height>20&&land[i][j].tp.name.equals("ice") || ice>0.3){
+        
+        biome[i][j] = "glacier";
+      }
+      
+      if(land[i][j].tp.name.equals("water")){
+        if(water>0.9){
+          biome[i][j] = "deepwater";
+        }
+        else {
+          biome[i][j] = "shallowwater";
+        }
+      }
+      if(water>0.35&&land[i][j].tp.name.equals("sand")){
+        biome[i][j] = "beach";
+      }
+    }
+  }
+}
 
 
 PImage terrainToImage(){
@@ -573,7 +709,7 @@ void draw(){
   avy += (camvy-avy)*0.1;
   
   
-  reassignAll();
+  
   //output = terrainToImage();
   noStroke();
   pushMatrix();
@@ -582,7 +718,8 @@ void draw(){
   
   
   TerrainTile t = getTile(screenToWorldX(mouseX)/32,screenToWorldY(mouseY)/32);
-  
+  float fr = getRatio(floor(screenToWorldX(mouseX)/32),floor(screenToWorldY(mouseY)/32),5,"forest");
+  float ar = getRatio(floor(screenToWorldX(mouseX)/32),floor(screenToWorldY(mouseY)/32),5,"arid dirt");
   //
   tileBatch.reset();
   
@@ -607,14 +744,33 @@ void draw(){
   stroke(255);
   beginShape(LINES);
   noFill();
+  strokeCap(SQUARE);
+  strokeWeight(1f/zoom);
   
   for (int i= minx; i<maxx; i++)
   {
     for (int j=miny; j<maxy; j++) 
     {
+      if(biome[t.x][t.y]==biome[i][j]){
+        stroke(255);
+      }else{
+        stroke(255,50);
+      }
       if(j-1>0 && biome[i][j] != biome[i][j-1] ){
         vertex(i*32,j*32);
         vertex(i*32+32,j*32);
+      }
+      if(i-1>0 && biome[i][j] != biome[i-1][j] ){
+        vertex(i*32,j*32);
+        vertex(i*32,j*32+32);
+      }
+      if(i+1<w && biome[i][j] != biome[i+1][j] ){
+        vertex(i*32+32,j*32);
+        vertex(i*32+32,j*32+32);
+      }
+      if(j+1<h && biome[i][j] != biome[i][j+1] ){
+        vertex(i*32,j*32+32);
+        vertex(i*32+32,j*32+32);
       }
     }
   }
@@ -629,4 +785,7 @@ void draw(){
   text("height:"+t.height,20,80);
   text("temp:"+t.temp,20,100);
   text("biome:"+biome[t.x][t.y],20,130);
+  
+  text("forest ratio:"+fr,20,170);
+  text("arid ratio:"+ar,20,190);
 }
