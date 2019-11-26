@@ -11,6 +11,9 @@ int evopoints;
 class Organism {
     //This will be the base starting species. Includes default Traits and starting Traits associated with species.
     ArrayList<Trait> species=new ArrayList();
+    ArrayList<Trait> temporaryStatuses=new ArrayList();
+    ArrayList<Float> timesOfTemporaryStatuses=new ArrayList();
+    ArrayList<Float> removeTime=new ArrayList();
     String filename;
     Boolean playerSpecies;
     //These are necessary for position.
@@ -37,6 +40,8 @@ class Organism {
     //Different parts -> different energy requirements
     //Sleep/day-night cycle core part of gameplay 
     ArrayList <Trait> traits=new ArrayList();
+    HashMap <String, Float> abilityCooldowns=new HashMap();
+    HashMap <String, Float> abilityDurations=new HashMap();
     HashMap <String, Parameter> parameters=new HashMap();
     public void addTrait(Trait t) {
         this.species.add(t);
@@ -50,18 +55,34 @@ class Organism {
         //TODO: Check for interactions through interaction manager.
         
     }
+    public void addTraitTemp(Trait t, float time) {
+        this.temporaryStatuses.add(t);
+        this.removeTime.add(time);
+        this.timesOfTemporaryStatuses.add(0f);
+        for (Parameter p: t.paramChanges) {
+            if (!parameters.containsKey(p.name)){
+                parameters.put(p.name,p);
+            } else {
+                parameters.get(p.name).changeBy(p); 
+            }
+        }
+    }
+    //Removal of temporary statuses.
+    public void removeTraitTemp(int index) {
+        
+    }
+    //This is for removal of permanent traits, not statuses
+    public void removeTrait(String name) {
+        
+    }
     public void useInteraction(Interaction i) {
         i.update(this);
     }
     public void update(){
-       
+       //Update temporary statuses based on gametick
     }
     public void draw() {
        rect(x,y,2,2);
-    }
-    //This method will be used to generate the portrait of the organisms.
-    public PImage getPortrait() {
-       return null; 
     }
     
 }
@@ -79,18 +100,4 @@ static class OrganismManager {
        }
      }
    }
-}
-
-
-class Ability {
-    String name;
-    String desc;
-    
-    Ability () {
-        
-    }
-    public float cooldown; 
-    public void enact(Organism o) {
-        
-    }   
 }

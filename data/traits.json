@@ -1,10 +1,9 @@
 {
-    "traits": [
-		{	"name": "Base", 
+	"traits": [{
+			"name": "Base",
 			"desc": "The basic features of any organism. If this is not present, we are in quite a buggy situation my friend.",
 			"has abilities": false,
-			"parameters": [
-				{
+			"parameters": [{
 					"name": "Health",
 					"desc": "The overall health of a creature. When this reaches zero, the creature dies. Affected by a number of conditions.",
 					"data type": "Float",
@@ -25,12 +24,12 @@
 						"data type": "Float",
 						"value": 100
 					}
-				}, 
+				},
 				{
 					"name": "Energy",
 					"desc": "How much energy a creature currently has to go about its daily activities",
 					"data type": "Float",
-					"value": 100f,
+					"value": 100,
 					"has update parameter": true,
 					"has max parameter": true,
 					"update tick": 60,
@@ -45,17 +44,17 @@
 						"desc": "The maximum a creature can achieve without eating or sleeping",
 						"data type": "Float",
 						"value": 100
-						
+
 					}
 				},
-				{	
+				{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": 1,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -64,13 +63,13 @@
 					"value": 1,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				},
 				{
-					"name":"Age",
-					"desc":"The older, the wiser",
+					"name": "Age",
+					"desc": "The older, the wiser",
 					"data type": "Integer",
-					"value":0,
+					"value": 0,
 					"has update parameter": true,
 					"has max parameter": false,
 					"has gui": false,
@@ -84,10 +83,10 @@
 					}
 				},
 				{
-					"name":"Weight",
-					"desc":"Have you seen the scale lately?",
+					"name": "Weight",
+					"desc": "Have you seen the scale lately?",
 					"data type": "Integer",
-					"value":100,
+					"value": 100,
 					"has update parameter": true,
 					"has max parameter": false,
 					"has gui": false,
@@ -106,12 +105,11 @@
 			"name": "Alive",
 			"desc": "To be alive is a good feeling in general."
 		},
-		{	
+		{
 			"name": "Undead",
-			"desc": "This creature is a member of the undead, and thus to maintain themselves must look to the living. However, they are less affected by damage, effectively immortal, have a chance to resurrect and are able to spread undead influence.",
+			"desc": "This creature is a member of the undead, and thus to maintain themselves must look to the living. However, they are less affected by damage, effectively immortal, have a small chance to resurrect upon destruction and are able to spread undead influence.",
 			"has abilities": true,
-			"parameters": [
-				{	
+			"parameters": [{
 					"name": "Energy Regen",
 					"desc": "To survive, the undead must look to the living to maintain themselves.",
 					"data type": "Float",
@@ -121,10 +119,10 @@
 					"has gui": false
 				},
 				{
-					"name":"Weight",
-					"desc":"Have you seen the scale lately?",
+					"name": "Weight",
+					"desc": "Have you seen the scale lately?",
 					"data type": "Integer",
-					"value":-20,
+					"value": -20,
 					"has update parameter": true,
 					"has max parameter": false,
 					"has gui": false,
@@ -136,13 +134,13 @@
 						"value": 0,
 						"has gui": false
 					}
-				}, 
+				},
 				{
 					"name": "Undead influence",
 					"desc": "The probability this creature will spawn again as an undead.",
 					"data type": "Integer",
 					"value": 10,
-					"has update parameter": true, 
+					"has update parameter": true,
 					"has max parameter": false,
 					"has gui": false,
 					"update parameter": {
@@ -153,17 +151,17 @@
 						"has gui": false
 					}
 				}
-				
-			],"abilities": [
-				
+
+			],
+			"abilities": [
+
 			]
-		}, 
+		},
 		{
 			"name": "Dead",
 			"desc": "This creature is dead.",
 			"has abilities": false,
-			"parameters": [
-				{
+			"parameters": [{
 					"name": "Decay",
 					"desc": "A rotting corpse slowly wastes away.",
 					"data type": "Integer",
@@ -186,7 +184,7 @@
 					"desc": "This creature can be eaten for food by carnivores or omnivores. Small chance of infection if eaten which increases over time.",
 					"data type": "Integer",
 					"value": 100,
-					"has update parameter": true, 
+					"has update parameter": true,
 					"has max parameter": false,
 					"has gui": false,
 					"update parameter": {
@@ -196,13 +194,13 @@
 						"value": -1,
 						"has gui": false
 					}
-				}, 
+				},
 				{
 					"name": "Undead influence",
 					"desc": "The probability this creature will spawn again as an undead.",
 					"data type": "Integer",
 					"value": 0,
-					"has update parameter": true, 
+					"has update parameter": true,
 					"has max parameter": false,
 					"has gui": false,
 					"update parameter": {
@@ -212,13 +210,13 @@
 						"value": 0,
 						"has gui": false
 					}
-				}, 
+				},
 				{
 					"name": "Infection probability",
 					"desc": "The probability this creature will infect any creature which eats it.",
 					"data type": "Integer",
 					"value": 0,
-					"has update parameter": true, 
+					"has update parameter": true,
 					"has max parameter": false,
 					"has gui": false,
 					"update tick": 100,
@@ -235,10 +233,9 @@
 		{
 			"name": "Flight",
 			"desc": "This creature is capable of flight",
-			"abilities": true,
-			"parameters": [
-				{
-					"name": "Flying"
+			"has abilities": true,
+			"parameters": [{
+					"name": "Flying",
 					"desc": "Whether the creature is currently in flight",
 					"data type": "Boolean",
 					"value": false,
@@ -247,7 +244,7 @@
 					"has gui": false
 				},
 				{
-					"name": "Flying speed"
+					"name": "Flying speed",
 					"desc": "How fast the creature is able to fly. Influenced by both weight and current energy.",
 					"data type": "Float",
 					"value": 2.5,
@@ -261,23 +258,22 @@
 						"has gui": false
 					}
 				}
-			]
+			],
 			"abilities": [
-			
+
 			]
 		},
 		{
 			"name": "Gargantuan",
 			"desc": "The size of this creature is the stuff of legend.",
-			"parameters": [
-				{	
+			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": 99,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -286,22 +282,21 @@
 					"value": 99,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				}
 			]
-		}
+		},
 		{
 			"name": "Very large",
 			"desc": "As a heavyweight, this creature requires significant energy and food to maintain itself. It also has a lower metabolism, and lower speed as a result.",
-			"parameters": [
-				{	
+			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": 29,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -310,22 +305,21 @@
 					"value": 29,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				}
 			]
 		},
 		{
 			"name": "Large",
 			"desc": "As a heavyweight, this creature requires significant energy to maintain itself. It also has a lower metabolism, and lower speed as a result.",
-			"parameters": [
-				{	
+			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": 4,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -334,22 +328,21 @@
 					"value": 4,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				}
 			]
 		},
 		{
 			"name": "Medium",
 			"desc": "This creature is about the size of a human.",
-			"parameters": [
-				{	
+			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": 0,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -358,22 +351,21 @@
 					"value": 0,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				}
 			]
 		},
 		{
 			"name": "Small",
 			"desc": "This creature is light and is about the same size as a cat.",
-			"parameters": [
-				{	
+			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": -0.5,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -382,22 +374,21 @@
 					"value": -0.5,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				}
 			]
 		},
 		{
 			"name": "Very small",
 			"desc": "This creature is very small and is about the same size as a mouse.",
-			"parameters": [
-				{	
+			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": -0.9,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -406,22 +397,21 @@
 					"value": -0.9,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				}
 			]
 		},
 		{
 			"name": "Tiny",
 			"desc": "This creature is inconspicuous and about the same size as an ant.",
-			"parameters": [
-				{	
+			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": -0.99,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -430,249 +420,224 @@
 					"value": -0.99,
 					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
+					"has gui": false
 				}
 			]
 		},
 		{
 			"name": "Infected",
 			"desc": "This creature has been infected with an illness.",
-			"parameters": [
-				{
-					"name": "Infection",
-					"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
+			"parameters": [{
+				"name": "Infection",
+				"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
+				"data type": "Integer",
+				"value": 10,
+				"has update parameter": true,
+				"update parameter": {
+					"name": "Infection spread",
+					"desc": "How quickly infection within the creature spreads.",
 					"data type": "Integer",
-					"value": 10,
-					"has update parameter": true,
-					"update parameter": {
-						"name": "Infection spread",
-						"desc": "How quickly infection within the creature spreads.",
-						"data type": "Integer",
-						"value": 3
-					}
+					"value": 3
 				}
-			]
+			}]
 		},
 		{
 			"name": "Weakly Infected",
 			"desc": "This creature has been infected with a mild illness.",
-			"parameters": [
-				{
-					"name": "Infection",
-					"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
+			"parameters": [{
+				"name": "Infection",
+				"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
+				"data type": "Integer",
+				"value": 10,
+				"has update parameter": true,
+				"update parameter": {
+					"name": "Weak infection spread",
+					"desc": "How quickly infection within the creature spreads.",
 					"data type": "Integer",
-					"value": 10,
-					"has update parameter": true,
-					"update parameter": {
-						"name": "Weak infection spread",
-						"desc": "How quickly infection within the creature spreads.",
-						"data type": "Integer",
-						"value": 1
-					}
+					"value": 1
 				}
-			]
-		}, 
+			}]
+		},
 		{
 			"name": "Contagious Infection",
 			"desc": "This creature has been infected with a highly contagious illness.",
-			"parameters": [
-				{
-					"name": "Infection",
-					"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die. Increases with infection amount.",
+			"parameters": [{
+				"name": "Infection",
+				"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die. Increases with infection amount.",
+				"data type": "Integer",
+				"value": 10,
+				"has update parameter": true,
+				"update parameter": {
+					"name": "Infection spread",
+					"desc": "How quickly infection within the creature spreads.",
 					"data type": "Integer",
-					"value": 10,
-					"has update parameter": true,
-					"update parameter": {
-						"name": "Infection spread",
-						"desc": "How quickly infection within the creature spreads.",
-						"value": 3
-					}
+					"value": 3
 				}
-			]
+			}]
 		},
 		{
 			"name": "Strong Infection",
 			"desc": "This creature has been infected with a particularly dangerous infection.",
-			"parameters": [
-				{
-					"name": "Infection",
-					"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
+			"parameters": [{
+				"name": "Infection",
+				"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
+				"data type": "Integer",
+				"value": 10,
+				"has update parameter": true,
+				"update parameter": {
+					"name": "Infection spread",
+					"desc": "How quickly infection within the creature spreads.",
 					"data type": "Integer",
-					"value": 10,
-					"has update parameter": true,
-					"update parameter": {
-						"name": "Infection spread",
-						"desc": "How quickly infection within the creature spreads.",
-						"value": 5
-					}
+					"value": 5
 				}
-			]
+			}]
 		},
 		{
 			"name": "Deadly Infection",
 			"desc": "This creature has been infected with a normally terminal infection.",
-			"parameters": [
-				{
-					"name": "Infection",
-					"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
+			"parameters": [{
+				"name": "Infection",
+				"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
+				"data type": "Integer",
+				"value": 10,
+				"has update parameter": true,
+				"update parameter": {
+					"name": "Infection spread",
+					"desc": "How quickly infection within the creature spreads.",
 					"data type": "Integer",
-					"value": 10,
-					"has update parameter": true,
-					"update parameter": {
-						"name": "Infection spread",
-						"desc": "How quickly infection within the creature spreads.",
-						"value": 7
-					}
+					"value": 7
 				}
-			]
+			}]
 		},
 		{
 			"name": "Survived Infection",
 			"desc": "This creature has survived infection, and its immune system has been strengthened as a result.",
-			"parameters": [
-				{
-					"name": "Immune system ability",
-					"desc": "How well the creature is able to fight off infection.",
-					"data type": "Integer",
-					"value": 3
-				}
-			]
-		}
+			"parameters": [{
+				"name": "Immune system ability",
+				"desc": "How well the creature is able to fight off infection.",
+				"data type": "Integer",
+				"value": 3
+			}]
+		},
 		{
 			"name": "Weak immune system",
 			"desc": "This creature has an impaired immune system",
-			"parameters": [
-				{
-					"name": "Immune system ability",
-					"desc": "How well the creature is able to fight off infection.",
-					"data type": "Integer",
-					"value": 1
-				}
-			]
-		}
+			"parameters": [{
+				"name": "Immune system ability",
+				"desc": "How well the creature is able to fight off infection.",
+				"data type": "Integer",
+				"value": 1
+			}]
+		},
 		{
 			"name": "Immune system",
 			"desc": "This creature has a dedicated and functional immune system",
-			"parameters": [
-				{
-					"name": "Immune system ability",
-					"desc": "How well the creature is able to fight off infection.",
-					"data type": "Integer",
-					"value": 3
-				}
-			]
+			"parameters": [{
+				"name": "Immune system ability",
+				"desc": "How well the creature is able to fight off infection.",
+				"data type": "Integer",
+				"value": 3
+			}]
 		},
 		{
 			"name": "Strong immune system",
 			"desc": "This creature has an unusually strong immune system able to combat most infections.",
-			"parameters": [
-				{
-					"name": "Immune system ability",
-					"desc": "How well the creature is able to fight off infection.",
-					"data type": "Integer",
-					"value": 6
-				}
-			]
+			"parameters": [{
+				"name": "Immune system ability",
+				"desc": "How well the creature is able to fight off infection.",
+				"data type": "Integer",
+				"value": 6
+			}]
 		},
 		{
 			"name": "Landborne",
 			"desc": "This creature is able to move around places on land",
-			"parameters": [
-				{
-					"name": "Movement speed",
-					"desc": "How quickly the creature can move",
-					"data type": "Float",
-					"value": 2.5
-				}
-			]
+			"parameters": [{
+				"name": "Movement speed",
+				"desc": "How quickly the creature can move",
+				"data type": "Float",
+				"value": 2.5
+			}]
 		},
 		{
 			"name": "Seaborne",
 			"desc": "This creature is able to swim in water",
-			"parameters": [
-				{
-					"name": "Water movement speed",
-					"desc": "How quickly the creature can swim",
-					"data type": "Float",
-					"value": 2.5
-				}
-			]
+			"parameters": [{
+				"name": "Water movement speed",
+				"desc": "How quickly the creature can swim",
+				"data type": "Float",
+				"value": 2.5
+			}]
 		},
 		{
 			"name": "Aerobic",
 			"desc": "This creature relies upon oxygen to live.",
-			"parameters": [
-				{
-					"name": "Air supply",
-					"desc": "How much access to oxygen the creature has. If this reaches 0 the creature dies.",
+			"parameters": [{
+				"name": "Air supply",
+				"desc": "How much access to oxygen the creature has. If this reaches 0 the creature dies.",
+				"data type": "Float",
+				"value": 100,
+				"has max parameter": true,
+				"has update parameter": true,
+				"update tick": 5,
+				"update parameter": {
+					"name": "Air supply change",
+					"desc": "Decreases whenever the creature is drowning or suffocating",
 					"data type": "Float",
-					"value": 100,
-					"has max parameter": true,
-					"has update parameter": true,
-					"update tick": 5,
-					"update parameter": {
-						"name": "Air supply change",
-						"desc": "Decreases whenever the creature is drowning or suffocating",
-						"data type": "Float",
-						"value": 10
-					},
-					"max parameter": {
-						"name": "Max air supply",
-						"desc": "The maximum amount of oxygen supply.",
-						"data type": "Float",
-						"value": 100
-					}
+					"value": 10
+				},
+				"max parameter": {
+					"name": "Max air supply",
+					"desc": "The maximum amount of oxygen supply.",
+					"data type": "Float",
+					"value": 100
 				}
-			]
+			}]
 		},
 		{
 			"name": "Gills",
 			"desc": "This creature is able to breathe in water. Suitable for Large, Medium and Small creatures.",
-			"parameters": [
-				{
-					"name": "Weight", 
-					"desc": "Have you seen the scale lately?",
-					"data type": "Integer",
-					"value":1,
-					"has update parameter": true,
-					"has max parameter": false,
-					"has gui": false,
-					"update tick": 100000,
-					"update parameter": {
-						"name": "Weight increase",
-						"desc": "As the creature grows, so does its weight.",
-						"data type": "Float",
-						"value": 0,
-						"has gui": false
-					}
-					
+			"parameters": [{
+				"name": "Weight",
+				"desc": "Have you seen the scale lately?",
+				"data type": "Integer",
+				"value": 1,
+				"has update parameter": true,
+				"has max parameter": false,
+				"has gui": false,
+				"update tick": 100000,
+				"update parameter": {
+					"name": "Weight increase",
+					"desc": "As the creature grows, so does its weight.",
+					"data type": "Float",
+					"value": 0,
+					"has gui": false
 				}
-			]
+
+			}]
 		},
 		{
 			"name": "Lungs",
 			"desc": "This creature has lungs and through this is able to breathe in air.",
-			"parameters": [
-				{
-					"name": "Weight", 
-					"desc": "Have you seen the scale lately?",
-					"data type": "Integer",
-					"value":1,
-					"has update parameter": true,
-					"has max parameter": false,
-					"has gui": false,
-					"update tick": 5,
-					"update parameter": {
-						"name": "Weight increase",
-						"desc": "As the creature grows, so does its weight.",
-						"data type": "Float",
-						"value": 0,
-						"has gui": false
-					}
-					
+			"parameters": [{
+				"name": "Weight",
+				"desc": "Have you seen the scale lately?",
+				"data type": "Integer",
+				"value": 1,
+				"has update parameter": true,
+				"has max parameter": false,
+				"has gui": false,
+				"update tick": 5,
+				"update parameter": {
+					"name": "Weight increase",
+					"desc": "As the creature grows, so does its weight.",
+					"data type": "Float",
+					"value": 0,
+					"has gui": false
 				}
-			]
-		}, 
+
+			}]
+		},
 		{
 			"name": "Hungry",
 			"desc": "A lack of food has resulted in this creature having reduced movement, combat ability and an increased susceptibility to infection."
@@ -697,58 +662,50 @@
 			"name": "Requires food",
 			"desc": "This creature requires food to survive.",
 			"has abilities": true,
-			"parameters": [
-				{
-					"name": "Hunger",
-					"desc": "How much this creature requires food",
-					"data type": "Integer",
-					"value":0,
-					"has update parameter": true,
-					"has max parameter": false,
-					"has gui": false,
-					"update tick": 1000,
-					"update parameter": {
-						"name": "Hunger increase",
-						"desc": "Natural requirements for food necessitate this.",
-						"data type": "Float",
-						"value": 10,
-						"has gui": false
-					}
+			"parameters": [{
+				"name": "Hunger",
+				"desc": "How much this creature requires food",
+				"data type": "Integer",
+				"value": 0,
+				"has update parameter": true,
+				"has max parameter": false,
+				"has gui": false,
+				"update tick": 1000,
+				"update parameter": {
+					"name": "Hunger increase",
+					"desc": "Natural requirements for food necessitate this.",
+					"data type": "Float",
+					"value": 10,
+					"has gui": false
 				}
-			],
-			"abilities": [
-				{
-					"_comment": "ability to eat goes here"
-				}
-			]
+			}],
+			"abilities": [{
+				"_comment": "ability to eat goes here"
+			}]
 		},
 		{
 			"name": "Requires water",
 			"desc": "This creature requires water to survive.",
-			"parameters": [
-				{
-					"name": "Thirst",
-					"desc": "How much this creature requires water",
-					"data type": "Integer",
-					"value":0,
-					"has update parameter": true,
-					"has max parameter": false,
-					"has gui": false,
-					"update tick": 1000,
-					"update parameter": {
-						"name": "Thirst increase",
-						"desc": "Natural requirements for water necessitate this.",
-						"data type": "Float",
-						"value": 10,
-						"has gui": false
-					}
+			"parameters": [{
+				"name": "Thirst",
+				"desc": "How much this creature requires water",
+				"data type": "Integer",
+				"value": 0,
+				"has update parameter": true,
+				"has max parameter": false,
+				"has gui": false,
+				"update tick": 1000,
+				"update parameter": {
+					"name": "Thirst increase",
+					"desc": "Natural requirements for water necessitate this.",
+					"data type": "Float",
+					"value": 10,
+					"has gui": false
 				}
-			],
-			"abilities": [
-				{
-					"_comment": "ability to eat goes here"
-				}
-			]
+			}],
+			"abilities": [{
+				"_comment": "ability to eat goes here"
+			}]
 		},
 		{
 			"name": "Omnivore",
@@ -757,7 +714,7 @@
 		{
 			"name": "Herbivore",
 			"desc": "This creature is able to digest only plant matter."
-		}, 
+		},
 		{
 			"name": "Carnivore",
 			"desc": "This creature is able to digest only animal matter."
@@ -765,8 +722,7 @@
 		{
 			"name": "Hive-minded",
 			"desc": "This creature operates under a hive system, where the queen replicates the species while workers maintain and defend the hive.",
-			"parameters": [
-				{
+			"parameters": [{
 					"name": "Queen",
 					"desc": "Whether a creature is a queen",
 					"data type": "Boolean",
@@ -783,24 +739,20 @@
 		{
 			"name": "Territorial",
 			"desc": "This creature operates under a system of territorial aggression, where a select few of its own are allowed into specific designated territory. Trespassing will cause retaliation.",
-			"parameters": [
-				{
-					"name": "Territorial range",
-					"desc": "The range under which the creature asserts its territory."
-				}
-			]
+			"parameters": [{
+				"name": "Territorial range",
+				"desc": "The range under which the creature asserts its territory."
+			}]
 		},
 		{
 			"name": "Caring",
 			"desc": "This creature cares after its young.",
-			"parameters": [
-				{
-					"name": "Age of care",
-					"desc": "The age up to which the creature will care for its young.",
-					"data type": "Integer",
-					"value": 10,
-				}
-			]
+			"parameters": [{
+				"name": "Age of care",
+				"desc": "The age up to which the creature will care for its young.",
+				"data type": "Integer",
+				"value": 10
+			}]
 		},
 		{
 			"name": "Burning",
@@ -809,30 +761,26 @@
 		{
 			"name": "Burn injury",
 			"desc": "This creature has a burn injury, causing it to be more susceptible to infection.",
-			"parameters": [
-				{
+			"parameters": [{
 					"name": "Immune system ability",
 					"desc": "How well the creature is able to fight off infection.",
 					"data type": "Integer",
-					"value": -2,
+					"value": -2
 				},
 				{
-					"max parameter": {
-						"name": "Max Health",
-						"desc": "How much a creature can handle before succumbing to death.",
-						"data type": "Float",
-						"value": -30
-					}
+					"name": "Max Health",
+					"desc": "How much a creature can handle before succumbing to death.",
+					"data type": "Float",
+					"value": -30
 				}
 			]
 		},
 		{
 			"name": "Basic self-repair mechanism",
 			"desc": "This creature has some basic ability to repair itself biologically. This costs a small amount of energy upkeep, but increases life expectancy and allows recovery from minor injury.",
-			"parameters": [
-				{
+			"parameters": [{
 					"name": "Base injury repair time",
-					"desc":"How quickly a creature is able to recover from a minor injury.",
+					"desc": "How quickly a creature is able to recover from a minor injury.",
 					"data type": "Integer",
 					"value": 3000
 				},
@@ -847,10 +795,9 @@
 		{
 			"name": "Developed self-repair mechanism",
 			"desc": "This creature has an ability to repair itself biologically. This costs a larger amount of energy upkeep, but significantly increases life expectancy and allows recovery from significant injury.",
-			"parameters": [
-				{
-					"name":"Base injury repair time",
-					"desc":"How quickly a creature is able to recover from a minor injury.",
+			"parameters": [{
+					"name": "Base injury repair time",
+					"desc": "How quickly a creature is able to recover from a minor injury.",
 					"data type": "Integer",
 					"value": 1500
 				},
@@ -865,10 +812,9 @@
 		{
 			"name": "Advanced self-repair mechanism",
 			"desc": "This creature has a very strong ability to repair itself biologically. This costs a larger amount of energy upkeep, but significantly increases life expectancy and allows recovery from loss of limbs and body parts.",
-			"parameters": [
-				{
-					"name":"Base injury repair time",
-					"desc":"How quickly a creature is able to recover from a minor injury.",
+			"parameters": [{
+					"name": "Base injury repair time",
+					"desc": "How quickly a creature is able to recover from a minor injury.",
 					"data type": "Integer",
 					"value": 500
 				},
@@ -883,10 +829,9 @@
 		{
 			"name": "Functionally Immortal",
 			"desc": "This creature is functionally immortal, able to recover from pretty much any injury besides loss of brain function and cannot die from aging. However, to maintain immortality it needs to consume a significant amount of food.",
-			"parameters": [
-				{
-					"name":"Base injury repair time",
-					"desc":"How quickly a creature is able to recover from a minor injury.",
+			"parameters": [{
+					"name": "Base injury repair time",
+					"desc": "How quickly a creature is able to recover from a minor injury.",
 					"data type": "Integer",
 					"value": 100
 				},
@@ -897,15 +842,15 @@
 					"value": -1
 				}
 			]
-		}, 
+		},
 		{
-			"name":"No climate preference",
-			"desc":"This creature has no climate preference, and will function just as well in all environments."
+			"name": "No climate preference",
+			"desc": "This creature has no climate preference, and will function just as well in all environments."
 		},
 		{
 			"name": "Temperate preference",
 			"desc": "This creature prefers a temperate climate."
-		},
-		
-    ]
+		}
+
+	]
 }

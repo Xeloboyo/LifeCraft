@@ -7,6 +7,9 @@ class Trait {
     //If not null, runs a particular script every tick.
     //Typically used for modifying behavior of a creature and checks on parameters.
     String runEveryTick;
+    String runPeriodic;
+    String runOnce;
+    int period;
     public int priority;
     //active as in is it on
     public boolean activated;
@@ -77,15 +80,21 @@ class Trait {
            Boolean hasAbilities= getBooleanJSON(trait, false, "has abilities");
            //This is the resulting scripted behavior for getting next target position.
            runEveryTick=getStringJSON(trait, "", "run every tick");
-           
+           boolean hasPeriodic=getBooleanJSON(trait,false,"has periodic script");
+           if (hasPeriodic) {
+              runPeriodic=getStringJSON(trait,"","run periodic");
+              period=getIntJSON(trait,1,"period of script");
+           }
+           boolean hasRunOnce=getBooleanJSON(trait,false,"has run once script");
+           if (hasRunOnce) {
+              runOnce=getStringJSON(trait,"","run once");
+           }
+           JSONArray abilities=trait.getJSONArray("abilities");
            if (hasAbilities) {
-             int count=1;
-             JSONObject nextAbility= (JSONObject) trait.get("ability "+count);
-             while (nextAbility!=null) {
-                 Ability a=new Ability();
-                 //todo ability loading
-                 count+=1;
-                 nextAbility= (JSONObject) trait.get("ability "+count);
+             for (int i=0; i<abilities.size(); i++) {
+                 JSONObject nextAbility= (JSONObject) abilities.get(i);
+                 String abilityName=nextAbility.getString("ability name");
+                 Ability a=getAbilityByName(abilityName,"data\\abilities");
              }
            }
            //Parameter loading
