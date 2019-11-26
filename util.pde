@@ -932,7 +932,6 @@ void textureSelected(File selection) {
       println("-------dir:"+await.dir);
       await.valid = true;
     }
-
    //resetTileSprite(1,2);
    
   }

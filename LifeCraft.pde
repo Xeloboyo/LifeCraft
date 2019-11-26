@@ -234,6 +234,8 @@ void generate(int w,int h){
     }  
      println("reseting types");
     reassignAll();
+     println("checking biomes");
+    analyseBiome();
 }
 void reassignAll(){
   for (int i=0; i<land.length; i++)
@@ -423,6 +425,62 @@ void settleWater(){
 
 
 
+float getRatio(int x,int y,int r,String type){
+  int count=0;
+  for (int i=x-r; i<=x+r; i++)
+  {
+    for (int j=y-r; j<=y+r; j++)
+    {
+      count+=getTile(i,j).tp.name.equals(type)?1:0;
+    }
+  }
+  return count/sqrd(2*r+1);
+}
+
+
+void analyseBiome(){
+  for (int i=0; i<land.length; i++)
+  {
+    for (int j=0; j<land[i].length; j++)
+    {
+      TerrainTile tt = land[i][j];
+      biome[i][j] = "none";
+      
+      float grass = getRatio(i,j,5,"grass");
+      float sand = getRatio(i,j,5,"sand");
+      float water = getRatio(i,j,5,"water");
+      float forest = getRatio(i,j,5,"forest");
+      float drydirt = getRatio(i,j,5,"arid dirt");
+      
+      if(tt.height>30){
+        biome[i][j] = "highlands";
+      }else{
+        if(sand>0.7){
+          biome[i][j] = "desert";
+        }
+        if(forest>0.3&&water<0.3){
+          biome[i][j] = "forest";
+        }
+        if(grass>0.7){
+          biome[i][j] = "grassland";
+        }else if(water>0.4 && grass+water>0.8){
+          biome[i][j] = "wetland";
+        }
+        if(getRatio(i,j,5,"water")>0.9){
+          biome[i][j] = "deepwater";
+        }
+        else if(land[i][j].tp.name.equals("water")){
+          biome[i][j] = "shallowwater";
+        }
+        
+      }
+      
+      
+    }
+  }
+}
+
+
 
 PImage terrainToImage(){
   PGraphics pg = createGraphics(w,h);
@@ -524,11 +582,16 @@ void draw(){
   
   TerrainTile t = getTile(screenToWorldX(mouseX)/32,screenToWorldY(mouseY)/32);
   
-  //beginShape(QUADS);
+  //
   tileBatch.reset();
-  for (int i=constrain(floor(screenToWorldX(0)/32),0,w-1); i<constrain(floor(screenToWorldX(width+32)/32),0,w-1); i++)
+  
+  int minx = constrain(floor(screenToWorldX(0)/32),0,w-1);
+  int maxx = constrain(floor(screenToWorldX(width+32)/32),0,w-1);
+  int miny = constrain(floor(screenToWorldY(0)/32),0,h-1);
+  int maxy = constrain(floor(screenToWorldY(height+32)/32),0,h-1);
+  for (int i= minx; i<=maxx; i++)
   {
-    for (int j=constrain(floor(screenToWorldY(0)/32),0,h-1); j<constrain(floor(screenToWorldY(height+32)/32),0,h-1); j++)
+    for (int j=miny; j<=maxy; j++)
       
     {
       color c= lerpColor(color(255),color(0,0,30),(1.0-0.05*land[i][j].height));
@@ -538,8 +601,24 @@ void draw(){
       tileBatch.addDrawOrder(land[i][j].tp.name,i*32,j*32,32,32,c);
     }
   }
-  //endShape();
+  //
   tileBatch.draw(g);
+  stroke(255);
+  beginShape(LINES);
+  noFill();
+  
+  for (int i= minx; i<maxx; i++)
+  {
+    for (int j=miny; j<maxy; j++) 
+    {
+      if(j-1>0 && biome[i][j] != biome[i][j-1] ){
+        vertex(i*32,j*32);
+        vertex(i*32+32,j*32);
+      }
+    }
+  }
+  endShape();
+  
   popMatrix();
   
   fill(255);
@@ -548,4 +627,5 @@ void draw(){
   text("soil:"+t.soilcover,20,60);
   text("height:"+t.height,20,80);
   text("temp:"+t.temp,20,100);
+  text("biome:"+biome[t.x][t.y],20,130);
 }
