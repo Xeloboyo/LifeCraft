@@ -1,7 +1,7 @@
 {
     "traits": [
-		{	"name": "Alive", 
-			"desc": "Being alive is generally a nice feeling.",
+		{	"name": "Base", 
+			"desc": "The basic features of any organism.",
 			"has abilities": false,
 			"parameters": [
 				{
@@ -48,6 +48,24 @@
 						
 					}
 				},
+				{	
+					"name": "Health multiplier",
+					"desc": "The health multiplier of a creature. ",
+					"data type": "Float",
+					"value": 1,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				},
+				{
+					"name": "Energy multiplier",
+					"desc": "The energy multiplier of a creature. ",
+					"data type": "Float",
+					"value": 1,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				},
 				{
 					"name":"Age",
 					"desc":"The older, the wiser",
@@ -84,32 +102,29 @@
 				}
 			]
 		},
+		{
+			"name": "Alive",
+			"desc": "To be alive is a good feeling in general."
+		},
 		{	
 			"name": "Undead",
-			"desc": "This creature is a member of the undead.",
+			"desc": "This creature is a member of the undead, and thus to maintain themselves must look to the living. However, they are less affected by damage, do not suffer infections, have a chance to resurrect and are able to spread undead influence.",
 			"has abilities": true,
 			"parameters": [
 				{	
-					"name": "Sustenance",
-					"desc": "To survive, the undead must look to the living.",
+					"name": "Energy Regen",
+					"desc": "To survive, the undead must look to the living to maintain themselves.",
 					"data type": "Float",
-					"value": 50,
-					"has update parameter": true,
+					"value": -0.2,
+					"has update parameter": false,
 					"has max parameter": false,
-					"has gui": false,
-					"update parameter": {
-						"name": "Sustenance decay",
-						"desc": "The undead swiftly decay without a source of sustenance.",
-						"data type": "Float",
-						"value": -0.3,
-						"has gui": false
-					}
+					"has gui": false
 				},
 				{
 					"name":"Weight",
 					"desc":"Have you seen the scale lately?",
 					"data type": "Integer",
-					"value":100,
+					"value":-20,
 					"has update parameter": true,
 					"has max parameter": false,
 					"has gui": false,
@@ -121,20 +136,19 @@
 						"value": 0,
 						"has gui": false
 					}
-				},
+				}, 
 				{
-					"name":"Age",
-					"desc":"The older, the wiser",
+					"name": "Undead influence",
+					"desc": "The probability this creature will spawn again as an undead.",
 					"data type": "Integer",
-					"value":0,
-					"has update parameter": true,
+					"value": 10,
+					"has update parameter": true, 
 					"has max parameter": false,
 					"has gui": false,
-					"update tick": 100000,
 					"update parameter": {
-						"name": "Growth",
-						"desc": "This creature is slowly growing.",
-						"data type": "Float",
+						"name": "Undead influence increase",
+						"desc": "Dark powers behold this corpse.",
+						"data type": "Integer",
 						"value": 0,
 						"has gui": false
 					}
@@ -207,6 +221,7 @@
 					"has update parameter": true, 
 					"has max parameter": false,
 					"has gui": false,
+					"update tick": 100,
 					"update parameter": {
 						"name": "Infection probability increase",
 						"desc": "As the corpse rots, bacteria and other potentially contagious agents breed.",
@@ -255,49 +270,168 @@
 			"name": "Gargantuan",
 			"desc": "The size of this creature is the stuff of legend.",
 			"parameters": [
-				
+				{	
+					"name": "Health multiplier",
+					"desc": "The health multiplier of a creature. ",
+					"data type": "Float",
+					"value": 99,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				},
+				{
+					"name": "Energy multiplier",
+					"desc": "The energy multiplier of a creature. ",
+					"data type": "Float",
+					"value": 99,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				}
 			]
 		}
 		{
 			"name": "Very large",
 			"desc": "As a heavyweight, this creature requires significant energy and food to maintain itself. It also has a lower metabolism, and lower speed as a result.",
 			"parameters": [
-				
+				{	
+					"name": "Health multiplier",
+					"desc": "The health multiplier of a creature. ",
+					"data type": "Float",
+					"value": 29,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				},
+				{
+					"name": "Energy multiplier",
+					"desc": "The energy multiplier of a creature. ",
+					"data type": "Float",
+					"value": 29,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				}
 			]
 		},
 		{
 			"name": "Large",
 			"desc": "As a heavyweight, this creature requires significant energy to maintain itself. It also has a lower metabolism, and lower speed as a result.",
 			"parameters": [
-				
+				{	
+					"name": "Health multiplier",
+					"desc": "The health multiplier of a creature. ",
+					"data type": "Float",
+					"value": 4,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				},
+				{
+					"name": "Energy multiplier",
+					"desc": "The energy multiplier of a creature. ",
+					"data type": "Float",
+					"value": 4,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				}
 			]
 		},
 		{
 			"name": "Medium",
 			"desc": "This creature is about the size of a human.",
 			"parameters": [
-				
+				{	
+					"name": "Health multiplier",
+					"desc": "The health multiplier of a creature. ",
+					"data type": "Float",
+					"value": 0,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				},
+				{
+					"name": "Energy multiplier",
+					"desc": "The energy multiplier of a creature. ",
+					"data type": "Float",
+					"value": 0,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				}
 			]
 		},
 		{
 			"name": "Small",
 			"desc": "This creature is light and is about the same size as a cat.",
 			"parameters": [
-				
+				{	
+					"name": "Health multiplier",
+					"desc": "The health multiplier of a creature. ",
+					"data type": "Float",
+					"value": -0.5,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				},
+				{
+					"name": "Energy multiplier",
+					"desc": "The energy multiplier of a creature. ",
+					"data type": "Float",
+					"value": -0.5,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				}
 			]
 		},
 		{
 			"name": "Very small",
 			"desc": "This creature is very small and is about the same size as a mouse.",
 			"parameters": [
-				
+				{	
+					"name": "Health multiplier",
+					"desc": "The health multiplier of a creature. ",
+					"data type": "Float",
+					"value": -0.9,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				},
+				{
+					"name": "Energy multiplier",
+					"desc": "The energy multiplier of a creature. ",
+					"data type": "Float",
+					"value": -0.9,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				}
 			]
 		},
 		{
 			"name": "Tiny",
 			"desc": "This creature is inconspicuous and about the same size as an ant.",
 			"parameters": [
-				
+				{	
+					"name": "Health multiplier",
+					"desc": "The health multiplier of a creature. ",
+					"data type": "Float",
+					"value": -0.99,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				},
+				{
+					"name": "Energy multiplier",
+					"desc": "The energy multiplier of a creature. ",
+					"data type": "Float",
+					"value": -0.99,
+					"has update parameter": false,
+					"has max parameter": false,
+					"has gui": false,
+				}
 			]
 		},
 		{
@@ -392,6 +526,18 @@
 				}
 			]
 		},
+		{
+			"name": "Survived Infection",
+			"desc": "This creature has survived infection, and its immune system has been strengthened as a result.",
+			"parameters": [
+				{
+					"name": "Immune system ability",
+					"desc": "How well the creature is able to fight off infection.",
+					"data type": "Integer",
+					"value": 3
+				}
+			]
+		}
 		{
 			"name": "Weak immune system",
 			"desc": "This creature has an impaired immune system",
@@ -662,7 +808,7 @@
 		},
 		{
 			"name": "Burn injury",
-			"desc": "This creature has a burn injury.",
+			"desc": "This creature has a burn injury, causing it to be more susceptible to infection.",
 			"parameters": [
 				{
 					"name": "Immune system ability",
@@ -677,6 +823,78 @@
 						"data type": "Float",
 						"value": -30
 					}
+				}
+			]
+		},
+		{
+			"name": "Basic self-repair mechanism",
+			"desc": "This creature has some basic ability to repair itself biologically. This costs a small amount of energy upkeep, but increases life expectancy and allows recovery from minor injury.",
+			"parameters": [
+				{
+					"name": "Base injury repair time",
+					"desc":"How quickly a creature is able to recover from a minor injury.",
+					"data type": "Integer",
+					"value": 3000
+				},
+				{
+					"name": "Energy Regen",
+					"desc": "The change of energy for a creature over time. Changes once every 60 ticks. Influenced by a number of conditions, such as combat or injury. A severe lack of energy will lead to a decrease in health",
+					"data type": "Float",
+					"value": -0.05
+				}
+			]
+		},
+		{
+			"name": "Developed self-repair mechanism",
+			"desc": "This creature has an ability to repair itself biologically. This costs a larger amount of energy upkeep, but significantly increases life expectancy and allows recovery from significant injury.",
+			"parameters": [
+				{
+					"name":"Base injury repair time",
+					"desc":"How quickly a creature is able to recover from a minor injury.",
+					"data type": "Integer",
+					"value": 1500
+				},
+				{
+					"name": "Energy Regen",
+					"desc": "The change of energy for a creature over time. Changes once every 60 ticks. Influenced by a number of conditions, such as combat or injury. A severe lack of energy will lead to a decrease in health",
+					"data type": "Float",
+					"value": -0.25
+				}
+			]
+		},
+		{
+			"name": "Advanced self-repair mechanism",
+			"desc": "This creature has a very strong ability to repair itself biologically. This costs a larger amount of energy upkeep, but significantly increases life expectancy and allows recovery from loss of limbs and body parts.",
+			"parameters": [
+				{
+					"name":"Base injury repair time",
+					"desc":"How quickly a creature is able to recover from a minor injury.",
+					"data type": "Integer",
+					"value": 500
+				},
+				{
+					"name": "Energy Regen",
+					"desc": "The change of energy for a creature over time. Changes once every 60 ticks. Influenced by a number of conditions, such as combat or injury. A severe lack of energy will lead to a decrease in health",
+					"data type": "Float",
+					"value": -0.7
+				}
+			]
+		},
+		{
+			"name": "Functionally Immortal",
+			"desc": "This creature is functionally immortal, able to recover from pretty much any injury besides loss of brain function and cannot die from aging. However, to maintain immortality it needs to consume a significant amount of food.",
+			"parameters": [
+				{
+					"name":"Base injury repair time",
+					"desc":"How quickly a creature is able to recover from a minor injury.",
+					"data type": "Integer",
+					"value": 100
+				},
+				{
+					"name": "Energy Regen",
+					"desc": "The change of energy for a creature over time. Changes once every 60 ticks. Influenced by a number of conditions, such as combat or injury. A severe lack of energy will lead to a decrease in health",
+					"data type": "Float",
+					"value": -1
 				}
 			]
 		}

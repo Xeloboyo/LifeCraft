@@ -150,6 +150,22 @@ class Parameter {
     }
     void displayParameter() {
         //Used in GUI to display the parameter itself. 
+        switch (name) {
+          case "Health":
+            break; 
+          case "Sustenance":
+            break;
+          case "Energy":
+            break;
+          case "Meat":
+            break;
+          case "Thirst":
+            break;
+          case "Hunger":
+            break;
+          default:
+            break;
+        }
     }
     //TODO
     void loadDisplay(String displayLocation, int displayIndex) {  
