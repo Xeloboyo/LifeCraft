@@ -295,6 +295,7 @@ class TextBox extends Component{
    boolean onKeyPress(char key, int keycode){
      ie.onKeyPressed(this);
      
+
      if(CONTROLPRESSED){
        println(key,keycode);
        if(key == 'c'){

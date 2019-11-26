@@ -35,6 +35,10 @@ class Organism {
     public void update(){
        
     }
+    //This method will be used to generate the portraits of the organisms.
+    public PImage getPortrait() {
+       return null; 
+    }
 }
 class OrganismManager {
    public ArrayList<Organism> organisms=new ArrayList();
