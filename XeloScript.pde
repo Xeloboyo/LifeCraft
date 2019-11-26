@@ -489,7 +489,17 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
               return new String[]{"\"false\"",""};
           }
           return new String[]{"\"true\"",""};
-        
+        //For this function, you have to input a single string consisting of the organism's parameters and the name of the parameter you want.
+        //(in the following format: "Health10,Energy5, ...") 
+        case "getParameter":
+          if (params.length<2){
+             return new String[]{"","| error in getTerrain, insufficent arguments|"};
+          } else if (params.length>2) {
+            return new String[]{"","| error in getTerrain, too many arguments|"};
+          }
+          String[] getParameters=params[0].split(",");
+          //First of all, get all ones which begin with the necessary keyword.
+          //I'll finish this one a bit later.
       }
       
       return null;
