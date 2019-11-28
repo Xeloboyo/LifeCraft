@@ -38,7 +38,6 @@ class Organism extends GameEntity {
     //influences gameplay
     //Different parts -> different energy requirements
     //Sleep/day-night cycle core part of gameplay 
-    ArrayList <Trait> traits=new ArrayList();
     HashMap <String, Float> abilityCooldowns=new HashMap();
     HashMap <String, Float> abilityDurations=new HashMap();
     HashMap <String, Parameter> parameters=new HashMap();
@@ -114,7 +113,25 @@ class Organism extends GameEntity {
             }
         }
     }
-    
+    public void castAbility(String abilityName,int x,int y) {
+        boolean hasAbility=false;
+        Trait abilityTrait=null;
+        for (Trait t: species) {
+           if (t.abilities.containsKey(abilityName)) {
+               hasAbility=true;
+               abilityTrait=t;
+           }
+        }
+        for (Trait t: temporaryStatuses) {
+           if (t.abilities.containsKey(abilityName)) {
+               hasAbility=true;
+               abilityTrait=t;
+           }
+        }
+        if (hasAbility&&abilityTrait!=null) {
+            abilityTrait.abilities.get(abilityName).cast(this,x,y,time);
+        }
+    }
     
     public void testInteraction(Interaction i) {
         i.update(this);
@@ -133,7 +150,7 @@ class Organism extends GameEntity {
     }
     @Override
     public Organism clone(){
-      return  new Organism(traits.toArray(new Trait[]{}), x, y,name);
+      return new Organism(species.toArray(new Trait[]{}), x, y,name);
     }
     void onDeath(){}
     

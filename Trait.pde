@@ -207,7 +207,21 @@ class Trait {
                while (!p.finished||!p.errored) {
                    p.runCycle();
                }
-               
+               //This type of program will return a position as well if the program returns to cast
+               //[Boolean toCast, int x, int y]
+               String toCast=p.returnvalue.split(",")[0];
+               toCast=toCast.substring(1);
+               if (!Boolean.parseBoolean(toCast)) {
+                  //Do not cast ability 
+                  println(o.name+" thought about casting ability "+ability+", but decided against it.");
+               } else {
+                  //Cast ability
+                  println(o.name+" is trying to cast "+ability+"!");
+                  int x=Integer.parseInt(p.returnvalue.split(",")[1]);
+                  String yStr=p.returnvalue.split(",")[2].substring(0,(p.returnvalue.split(",")[2]).length()-2);
+                  int y=Integer.parseInt(yStr);
+                  o.castAbility(ability,x,y);
+               }
            }
        }
     }
