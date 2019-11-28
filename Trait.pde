@@ -196,7 +196,7 @@ class Trait {
                //Program returns 3 arguments in returnvalue as an array in the following format:
                
                //x,y,priority;x,y,priority.
-               o.targets.add();
+               //o.targets.add();
            } else if (programType.get(i).startsWith("ability")) {
                String [] abilities=programType.get(i).split(" ");
                String ability="";
