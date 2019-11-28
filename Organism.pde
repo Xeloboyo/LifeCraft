@@ -8,7 +8,7 @@ import java.util.logging.Level;
 //Base params needed to add to organism: stuff like health etc. want to add here to add modularity and avoid hardcoding.
 public final String[] critical_params={"Health","Energy","Weight","Age","Health multiplier","Energy multiplier"};
 int evopoints;
-class Organism {
+class Organism extends GameEntity {
     //This will be the base starting species. Includes default Traits and starting Traits associated with species.
     ArrayList<Trait> species=new ArrayList();
     ArrayList<Trait> temporaryStatuses=new ArrayList();
@@ -17,10 +17,7 @@ class Organism {
     String filename;
     Boolean playerSpecies;
     //These are necessary for position.
-    float x;
-    float y;
-    float velX=0;
-    float velY=0;
+    
     //Used in behaviors to describe where the organism should be going.
     ArrayList<float[]> targets=new ArrayList();
     //Used to specify the priority of a particular target to reach.
@@ -134,8 +131,15 @@ class Organism {
     public void draw() {
        rect(x,y,2,2);
     }
+    @Override
+    public Organism clone(){
+      return  new Organism(traits.toArray(new Trait[]{}), x, y,speciesName);
+    }
+    void onDeath(){}
     
 }
+
+//remove later.
 static class OrganismManager {
    public static HashMap<String,ArrayList<Organism>> organisms=new HashMap();
    public static ArrayList<String> species;
