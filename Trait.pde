@@ -1,3 +1,4 @@
+
 class Trait {
     JSONObject traitSave;
     //-1=passive 
@@ -6,30 +7,32 @@ class Trait {
     public String desc;
     //If not null, runs a particular script every tick.
     //Typically used for modifying behavior of a creature and checks on parameters.
-    String runEveryTick;
-    String runPeriodic;
-    String runOnce;
+    ArrayList<String>programs=new ArrayList();
+    ArrayList<String>programType=new ArrayList();
+    HashMap<String,Integer>intervals=new HashMap();
+    HashMap<String,Ability>abilities=new HashMap();
+    Boolean isEvolvable;
+    int evoPointsCost;
+    ArrayList<Trait> evoReqs=new ArrayList();
     int period;
     public int priority;
     //active as in is it on
-    public boolean activated;
+    public boolean activated=true;
     public int index;
     public String filename;
     ArrayList < Parameter> paramChanges=new ArrayList(); 
-    //This is to indicate whether a particular trait is temporary, and is useful for effects on organisms such as injury, being on fire or famine.
-    boolean isModifier; 
     Trait(String filename, int index) {
         this.index=index;
         this.filename=filename;
         loadTrait();
     }
-    public void enact(Organism o) {
+   /* public void enact(Organism o) {
         for (int i=0; i<paramChanges.size(); i++) {
             if (o.parameters.containsKey(paramChanges.get(i).name)) {
                 o.parameters.get(paramChanges.get(i).name).changeBy(paramChanges.get(i));
             }
         }
-    }
+    }*/
     
     public void loadTrait() {
         // Actual format:
@@ -77,18 +80,32 @@ class Trait {
         
            name = getStringJSON(trait, "name_not_found", "name");
            desc= getStringJSON(trait, "desc_not_found", "desc");
+           isEvolvable=getBooleanJSON(trait,false,"is evolvable");
+           if (isEvolvable) {
+               evoPointsCost=getIntJSON(trait,0,"evo points cost");
+               JSONArray evolutionReqs=trait.getJSONArray("evo requirements");
+               for (int i=0; i<evolutionReqs.size(); i++) {
+                    JSONObject evolutionReq=(JSONObject) evolutionReqs.get(i);
+                    String evolutionReqName=evolutionReq.getString("name");
+                    evoReqs.add(getTraitByName(evolutionReqName,"data\\traits"));
+               }
+           }
+           activated=getBooleanJSON(trait,true,"active");
+           Boolean hasPrograms=trait.getBoolean("has programs",false);
+           JSONArray programsArray=trait.getJSONArray("programs");
+           if (hasPrograms) {
+              for (int i=0; i<programsArray.size(); i++) {
+                 JSONObject program=(JSONObject)programsArray.get(i);
+                 programs.add(program.getString("name"));
+                 programType.add(program.getString("program role"));
+                 Boolean hasInterval=program.getBoolean("has interval",false);
+                 if (hasInterval) {
+                     intervals.put(program.getString("name"),program.getInt("tick interval"));
+                 }
+              }
+           }
            Boolean hasAbilities= getBooleanJSON(trait, false, "has abilities");
            //This is the resulting scripted behavior for getting next target position.
-           runEveryTick=getStringJSON(trait, "", "run every tick");
-           boolean hasPeriodic=getBooleanJSON(trait,false,"has periodic script");
-           if (hasPeriodic) {
-              runPeriodic=getStringJSON(trait,"","run periodic");
-              period=getIntJSON(trait,1,"period of script");
-           }
-           boolean hasRunOnce=getBooleanJSON(trait,false,"has run once script");
-           if (hasRunOnce) {
-              runOnce=getStringJSON(trait,"","run once");
-           }
            JSONArray abilities=trait.getJSONArray("abilities");
            if (hasAbilities) {
              for (int i=0; i<abilities.size(); i++) {
@@ -107,7 +124,7 @@ class Trait {
                   paramChanges.add(p);
                }
            }
-           //Compatible Trait loading
+           
            
         } catch (Exception e) {
           Logger.getLogger(Organism.class.getName()).log(Level.SEVERE, null, e);
@@ -116,12 +133,87 @@ class Trait {
           e.printStackTrace(); 
         }
     }
-    public void saveTrait() {
-      
+    public void update(Organism o) {
+       //Add methods here. 
+       //First of all, update all parameters.
+       for (Parameter p: paramChanges) {
+            p.update(); 
+       }
+       //Next, use programs to update organism.
+       //For programs, input will consist of an organism and programs will have a flag as to their operation.
+       //Based on their flag, a particular operation will occur.
+       
+       //FLAGS:
+       //update (parameter)
+       //    This program will change the value of a particular named parameter with the return value of a program.
+       //movement
+       //    This program will output an array of movement coordinates with a priority.
+       //ability (abilityname)
+       //    This program will return whether a named ability should be cast
+       //    and also returns the coordinates in which to cast.
+       //All these programs will have an initial input of the organism parameters.
+       for (int i=0; i<programs.size(); i++) {
+           String progName=programs.get(i);  
+           String prog=getFile(progName);
+           Program p=new Program(prog);
+           //Since everything can be fetched from the position, only the position is necessary.
+           injectVariable(new String[]{"x","y"},new String[]{(int)o.x+"",(int)o.y+""},p);
+           if (programType.get(i).startsWith("update")) {
+               String [] parameters=programType.get(i).split(" ");
+               String parameter="";
+               for (int j=1; j<parameters.length; j++) {
+                   parameter.concat(parameters[i]+" ");
+               }
+               p.functions.add(gameFunctions);
+               while (!p.finished||!p.errored) {
+                   p.runCycle();
+               }
+               o.parameters.get(parameter).paramValue=p.returnvalue;
+               switch (o.parameters.get(parameter).dataType) {
+                  case "Integer":
+                      o.parameters.get(parameter).paramValue=Integer.parseInt(o.parameters.get(parameters).paramValue.toString());
+                      break;
+                  case "Double":
+                      o.parameters.get(parameter).paramValue=Double.parseDouble(o.parameters.get(parameters).paramValue.toString());
+                      break;
+                  case "Float":
+                      o.parameters.get(parameter).paramValue=Float.parseFloat(o.parameters.get(parameters).paramValue.toString());
+                      break;
+                  case "Boolean":
+                      o.parameters.get(parameter).paramValue=Boolean.parseBoolean(o.parameters.get(parameters).paramValue.toString());
+                      break;
+                  case "String": 
+                      o.parameters.get(parameter).paramValue=o.parameters.get(parameters).paramValue.toString();
+                      break;
+                  default:
+                      break;
+               }
+           } else if (programType.get(i).startsWith("movement")) {
+               p.functions.add(gameFunctions);
+               while (!p.finished||!p.errored) {
+                   p.runCycle();
+               }
+               //Program returns 3 arguments in returnvalue as an array in the following format:
+               
+               //x,y,priority;x,y,priority.
+               o.targets.add();
+           } else if (programType.get(i).startsWith("ability")) {
+               String [] abilities=programType.get(i).split(" ");
+               String ability="";
+               for (int j=1; j<abilities.length; j++) {
+                   ability.concat(abilities[i]+" ");
+               }
+               p.functions.add(gameFunctions);
+               while (!p.finished||!p.errored) {
+                   p.runCycle();
+               }
+               
+           }
+       }
     }
 }
+//This is loading. If already loaded, fetch from HashMap.
 public Trait getTraitByName(String name, String filename) {
-     
     String JSONWHOLE=getFile(filename);
     System.out.println(JSONWHOLE);
     JSONObject all = parseJSONObject(JSONWHOLE);
@@ -277,6 +369,7 @@ class Parameter {
              p.changed=true;
          }
     }
+    
     void update() {
         switch (dataType) {
                 case "int":

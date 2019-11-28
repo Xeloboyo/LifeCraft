@@ -22,18 +22,20 @@ class Organism {
     float velX=0;
     float velY=0;
     //Used in behaviors to describe where the organism should be going.
-    float targets[][];
+    ArrayList<float[]> targets=new ArrayList();
     //Used to specify the priority of a particular target to reach.
-    int priority[];
+    ArrayList<Integer> priorities=new ArrayList();
+    
+    
     //Used to identify species for display.
-    String speciesName;
+    String name;
     public Organism(Trait[] traits, float x, float y,String species) {
         this.x=x;
         this.y=y;
         for (Trait trait:traits) {
           addTrait(trait);
         }
-        speciesName=species;
+        name=species;
     }
     //Traits/body parts determine how the thing works: the specific trait
     //influences gameplay
@@ -69,17 +71,65 @@ class Organism {
     }
     //Removal of temporary statuses.
     public void removeTraitTemp(int index) {
-        
+        Trait toBeRemoved=temporaryStatuses.get(index);
+        //First of all, remove trait.
+        temporaryStatuses.remove(toBeRemoved);
+        //Refresh parameters
+        refreshParameters();
     }
-    //This is for removal of permanent traits, not statuses
+    //This is for removal of species traits, not statuses. Removes one.
     public void removeTrait(String name) {
-        
+        int toRemove=-1;
+        for (int i=0; i<species.size(); i++) {
+             if (species.get(i).name==name) {
+                  toRemove=i;
+             }
+        }
+        if (toRemove!=-1) {
+             species.remove(toRemove);
+        }
+        refreshParameters();
     }
-    public void useInteraction(Interaction i) {
+    //removes all instances of a species trait.
+    public void removeAllPermanent(String name) {
+        while (species.contains(getTraitByName(name,"data\\traits"))){
+            removeTrait(name);
+        }
+    }
+    public void refreshParameters() {
+        parameters.clear();
+        for (Trait t: species) {
+            for (Parameter p: t.paramChanges) {
+                if (!parameters.containsKey(p.name)){
+                    parameters.put(p.name,p);
+                } else {
+                    parameters.get(p.name).changeBy(p); 
+                }
+            } 
+        }
+        for (Trait t: temporaryStatuses) {
+            for (Parameter p: t.paramChanges) {
+                if (!parameters.containsKey(p.name)){
+                    parameters.put(p.name,p);
+                } else {
+                    parameters.get(p.name).changeBy(p); 
+                }
+            }
+        }
+    }
+    
+    
+    public void testInteraction(Interaction i) {
         i.update(this);
     }
     public void update(){
        //Update temporary statuses based on gametick
+       for (Trait t: species) {
+          if (t.activated) {
+              t.update(this); 
+          }
+          refreshParameters();
+       }
     }
     public void draw() {
        rect(x,y,2,2);

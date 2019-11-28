@@ -52,7 +52,7 @@ class Interaction {
           passinnames[i]=o.parameters.get(interactingParameters.get(i)).name;
       }
       injectVariable(passinnames,passin,p);
-      p.functions.add(defaultFunctions);
+      p.functions.add(gameFunctions);
       while (!p.finished||!p.errored) {
           p.runCycle();
       }
