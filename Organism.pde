@@ -133,7 +133,7 @@ class Organism extends GameEntity {
     }
     @Override
     public Organism clone(){
-      return  new Organism(traits.toArray(new Trait[]{}), x, y,speciesName);
+      return  new Organism(traits.toArray(new Trait[]{}), x, y,name);
     }
     void onDeath(){}
     
