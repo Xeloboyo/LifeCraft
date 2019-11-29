@@ -3,6 +3,7 @@
 			"name": "Base",
 			"desc": "The basic features of any organism. If this is not present, we are in quite a buggy situation my friend.",
 			"has abilities": false,
+			"is evolvable": false,
 			"parameters": [{
 					"name": "Health",
 					"desc": "The overall health of a creature. When this reaches zero, the creature dies. Affected by a number of conditions.",
@@ -10,7 +11,6 @@
 					"value": 100,
 					"has update parameter": true,
 					"has max parameter": true,
-					"has gui": false,
 					"update tick": 60,
 					"update parameter": {
 						"name": "Health Regen",
@@ -53,8 +53,7 @@
 					"data type": "Float",
 					"value": 1,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -62,8 +61,7 @@
 					"data type": "Float",
 					"value": 1,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				},
 				{
 					"name": "Age",
@@ -72,14 +70,12 @@
 					"value": 0,
 					"has update parameter": true,
 					"has max parameter": false,
-					"has gui": false,
 					"update tick": 100000,
 					"update parameter": {
 						"name": "Growth",
 						"desc": "This creature is slowly growing.",
 						"data type": "Float",
-						"value": 1,
-						"has gui": false
+						"value": 1
 					}
 				},
 				{
@@ -89,14 +85,12 @@
 					"value": 100,
 					"has update parameter": true,
 					"has max parameter": false,
-					"has gui": false,
 					"update tick": 100000,
 					"update parameter": {
 						"name": "Weight increase",
 						"desc": "As the creature grows, so does its weight.",
 						"data type": "Float",
-						"value": 0,
-						"has gui": false
+						"value": 0
 					}
 				}
 			]
@@ -109,14 +103,14 @@
 			"name": "Undead",
 			"desc": "This creature is a member of the undead, and thus to maintain themselves must look to the living. However, they are less affected by damage, effectively immortal, have a small chance to resurrect upon destruction and are able to spread undead influence.",
 			"has abilities": true,
+			"is evolvable": false,
 			"parameters": [{
 					"name": "Energy Regen",
 					"desc": "To survive, the undead must look to the living to maintain themselves.",
 					"data type": "Float",
 					"value": -0.2,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				},
 				{
 					"name": "Weight",
@@ -125,14 +119,12 @@
 					"value": -20,
 					"has update parameter": true,
 					"has max parameter": false,
-					"has gui": false,
 					"update tick": 100000,
 					"update parameter": {
 						"name": "Weight increase",
 						"desc": "As the creature grows, so does its weight.",
 						"data type": "Float",
-						"value": 0,
-						"has gui": false
+						"value": 0
 					}
 				},
 				{
@@ -142,13 +134,11 @@
 					"value": 10,
 					"has update parameter": true,
 					"has max parameter": false,
-					"has gui": false,
 					"update parameter": {
 						"name": "Undead influence increase",
 						"desc": "Dark powers behold this corpse.",
 						"data type": "Integer",
-						"value": 0,
-						"has gui": false
+						"value": 0
 					}
 				}
 
@@ -161,22 +151,21 @@
 			"name": "Dead",
 			"desc": "This creature is dead.",
 			"has abilities": false,
+			"is evolvable": false,
 			"parameters": [{
 					"name": "Decay",
 					"desc": "A rotting corpse slowly wastes away.",
 					"data type": "Integer",
 					"value": 0,
 					"has update parameter": true,
-					"has max parameter": false,
-					"has gui": false,
+					"has max parameter": false
 					"update parameter": {
 						"name": "Decay rate",
 						"desc": "Slowly wasting away.",
 						"data type": "Integer",
 						"value": 1,
 						"has update parameter": false,
-						"has max parameter": false,
-						"has gui": false
+						"has max parameter": false
 					}
 				},
 				{
@@ -185,14 +174,12 @@
 					"data type": "Integer",
 					"value": 100,
 					"has update parameter": true,
-					"has max parameter": false,
-					"has gui": false,
+					"has max parameter": false
 					"update parameter": {
 						"name": "Meat decay rate",
 						"desc": "Slowly wasting away.",
 						"data type": "Integer",
-						"value": -1,
-						"has gui": false
+						"value": -1
 					}
 				},
 				{
@@ -202,13 +189,11 @@
 					"value": 0,
 					"has update parameter": true,
 					"has max parameter": false,
-					"has gui": false,
 					"update parameter": {
 						"name": "Undead influence increase",
 						"desc": "Dark powers behold this corpse.",
 						"data type": "Integer",
-						"value": 0,
-						"has gui": false
+						"value": 0
 					}
 				},
 				{
@@ -218,14 +203,12 @@
 					"value": 0,
 					"has update parameter": true,
 					"has max parameter": false,
-					"has gui": false,
 					"update tick": 100,
 					"update parameter": {
 						"name": "Infection probability increase",
 						"desc": "As the corpse rots, bacteria and other potentially contagious agents breed.",
 						"data type": "Integer",
-						"value": 1,
-						"has gui": false
+						"value": 1
 					}
 				}
 			]
@@ -234,14 +217,19 @@
 			"name": "Flight",
 			"desc": "This creature is capable of flight",
 			"has abilities": true,
+			"is evolvable": true,
+			"evo points":1000,
+			"evo requirements": [{
+				name:"Wing",
+				include: true
+			}]
 			"parameters": [{
 					"name": "Flying",
 					"desc": "Whether the creature is currently in flight",
 					"data type": "Boolean",
 					"value": false,
 					"has max parameter": false,
-					"has update parameter": false,
-					"has gui": false
+					"has update parameter": false
 				},
 				{
 					"name": "Flying speed",
@@ -254,8 +242,7 @@
 						"name": "Flying speed acceleration",
 						"desc": "Acceleration is the epitome of exhilaration.",
 						"data type": "Integer",
-						"value": 0,
-						"has gui": false
+						"value": 0
 					}
 				}
 			],
@@ -266,14 +253,19 @@
 		{
 			"name": "Gargantuan",
 			"desc": "The size of this creature is the stuff of legend.",
+			"is evolvable": true,
+			"evo points": 10000,
+			"evo requirements": [{
+				name:"Very large",
+				include: true
+			}]
 			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": 99,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -281,22 +273,26 @@
 					"data type": "Float",
 					"value": 99,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				}
 			]
 		},
 		{
 			"name": "Very large",
 			"desc": "As a heavyweight, this creature requires significant energy and food to maintain itself. It also has a lower metabolism, and lower speed as a result.",
+			"is evolvable": true,
+			"evo points": 3000,
+			"evo requirements": [{
+				name:"Large",
+				include: true
+			}]
 			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": 29,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -304,22 +300,26 @@
 					"data type": "Float",
 					"value": 29,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				}
 			]
 		},
 		{
 			"name": "Large",
 			"desc": "As a heavyweight, this creature requires significant energy to maintain itself. It also has a lower metabolism, and lower speed as a result.",
+			"is evolvable": true,
+			"evo points": 1000,
+			"evo requirements": [{
+				name:"Medium",
+				include: true
+			}]
 			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": 4,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -327,22 +327,26 @@
 					"data type": "Float",
 					"value": 4,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				}
 			]
 		},
 		{
 			"name": "Medium",
 			"desc": "This creature is about the size of a human.",
+			"is evolvable": true,
+			"evo points": 1000,
+			"evo requirements": [{
+				name:"Small",
+				include: true
+			}]
 			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": 0,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -350,22 +354,26 @@
 					"data type": "Float",
 					"value": 0,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				}
 			]
 		},
 		{
 			"name": "Small",
 			"desc": "This creature is light and is about the same size as a cat.",
+			"is evolvable": true,
+			"evo points": 500,
+			"evo requirements": [{
+				name:"Very small",
+				include: true
+			}]
 			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": -0.5,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -373,22 +381,21 @@
 					"data type": "Float",
 					"value": -0.5,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				}
 			]
 		},
 		{
 			"name": "Very small",
 			"desc": "This creature is very small and is about the same size as a mouse.",
+			"is evolvable": false,
 			"parameters": [{
 					"name": "Health multiplier",
 					"desc": "The health multiplier of a creature. ",
 					"data type": "Float",
 					"value": -0.9,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				},
 				{
 					"name": "Energy multiplier",
@@ -396,37 +403,14 @@
 					"data type": "Float",
 					"value": -0.9,
 					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
-				}
-			]
-		},
-		{
-			"name": "Tiny",
-			"desc": "This creature is inconspicuous and about the same size as an ant.",
-			"parameters": [{
-					"name": "Health multiplier",
-					"desc": "The health multiplier of a creature. ",
-					"data type": "Float",
-					"value": -0.99,
-					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
-				},
-				{
-					"name": "Energy multiplier",
-					"desc": "The energy multiplier of a creature. ",
-					"data type": "Float",
-					"value": -0.99,
-					"has update parameter": false,
-					"has max parameter": false,
-					"has gui": false
+					"has max parameter": false
 				}
 			]
 		},
 		{
 			"name": "Infected",
 			"desc": "This creature has been infected with an illness.",
+			"is evolvable": false,
 			"parameters": [{
 				"name": "Infection",
 				"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
@@ -442,8 +426,9 @@
 			}]
 		},
 		{
-			"name": "Weakly Infected",
+			"name": "Weakly infected",
 			"desc": "This creature has been infected with a mild illness.",
+			"is evolvable": false,
 			"parameters": [{
 				"name": "Infection",
 				"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
@@ -459,8 +444,9 @@
 			}]
 		},
 		{
-			"name": "Contagious Infection",
+			"name": "Contagious infection",
 			"desc": "This creature has been infected with a highly contagious illness.",
+			"is evolvable": false,
 			"parameters": [{
 				"name": "Infection",
 				"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die. Increases with infection amount.",
@@ -476,8 +462,9 @@
 			}]
 		},
 		{
-			"name": "Strong Infection",
+			"name": "Strong infection",
 			"desc": "This creature has been infected with a particularly dangerous infection.",
+			"is evolvable": false,
 			"parameters": [{
 				"name": "Infection",
 				"desc": "The spread of an infection within an organism. The higher, the more likely the creature is to become impaired or die.",
@@ -493,7 +480,7 @@
 			}]
 		},
 		{
-			"name": "Deadly Infection",
+			"name": "Deadly infection",
 			"desc": "This creature has been infected with a normally terminal infection.",
 			"parameters": [{
 				"name": "Infection",
@@ -510,7 +497,7 @@
 			}]
 		},
 		{
-			"name": "Survived Infection",
+			"name": "Survived infection",
 			"desc": "This creature has survived infection, and its immune system has been strengthened as a result.",
 			"parameters": [{
 				"name": "Immune system ability",
@@ -521,7 +508,10 @@
 		},
 		{
 			"name": "Weak immune system",
-			"desc": "This creature has an impaired immune system",
+			"desc": "This creature has a weak immune system, able to fight off small infections.",
+			"is evolvable": true,
+			"evo points": 300,
+			"evo requirements":[],
 			"parameters": [{
 				"name": "Immune system ability",
 				"desc": "How well the creature is able to fight off infection.",
@@ -532,6 +522,12 @@
 		{
 			"name": "Immune system",
 			"desc": "This creature has a dedicated and functional immune system",
+			"is evolvable": true,
+			"evo points": 700,
+			"evo requirements":[{
+				"name": "Weak immune system",
+				"include": true
+			}],
 			"parameters": [{
 				"name": "Immune system ability",
 				"desc": "How well the creature is able to fight off infection.",
@@ -542,6 +538,16 @@
 		{
 			"name": "Strong immune system",
 			"desc": "This creature has an unusually strong immune system able to combat most infections.",
+			"is evolvable": true,
+			"evo points": 1500,
+			"evo requirements":[{
+				"name": "Immune system",
+				"include": true
+			},
+			{
+				"name": "Very small",
+				"include": false
+			}],
 			"parameters": [{
 				"name": "Immune system ability",
 				"desc": "How well the creature is able to fight off infection.",
@@ -597,6 +603,17 @@
 		{
 			"name": "Gills",
 			"desc": "This creature is able to breathe in water. Suitable for Large, Medium and Small creatures.",
+			"is evolvable": true,
+			"evo points": 200,
+			"evo requirements":[
+			{
+				"name": "Very small",
+				"include": false
+			},
+			{
+				"name": "Small",
+				"include": false
+			}],
 			"parameters": [{
 				"name": "Weight",
 				"desc": "Have you seen the scale lately?",
@@ -617,8 +634,34 @@
 			}]
 		},
 		{
+			"name": "Simple breathing apparatus",
+			"desc": "This creature has a simple breathing apparatus, which restricts the rate of respiration due to low oxygen.",
+			"is evolvable": true,
+			"evo points": 100,
+			"evo requirements":[],
+			"parameters": [
+			{
+					"name": "Energy Regen",
+					"desc": "A lack of efficient respiration results in reduced ability to perform.",
+					"data type": "Float",
+					"value": -0.1,
+					"has update parameter": false,
+					"has max parameter": false
+				}]
+		},
+		{
 			"name": "Lungs",
 			"desc": "This creature has lungs and through this is able to breathe in air.",
+			"is evolvable": true,
+			"evo points": 200,
+			"evo requirements":[{
+				"name": "Very small",
+				"include": false
+			},
+			{
+				"name": "Simple breathing apparatus",
+				"include": true
+			}],
 			"parameters": [{
 				"name": "Weight",
 				"desc": "Have you seen the scale lately?",
@@ -778,6 +821,9 @@
 		{
 			"name": "Basic self-repair mechanism",
 			"desc": "This creature has some basic ability to repair itself biologically. This costs a small amount of energy upkeep, but increases life expectancy and allows recovery from minor injury.",
+			"is evolvable": true,
+			"evo points": 100,
+			"evo requirements":[],
 			"parameters": [{
 					"name": "Base injury repair time",
 					"desc": "How quickly a creature is able to recover from a minor injury.",
@@ -849,6 +895,298 @@
 		},
 		{
 			"name": "Temperate preference",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Cold preference",
+			"desc": "This creature prefers a cold climate."
+		},
+		{
+			"name": "Head",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Eye",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Nose",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Mouth",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Mandible",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Neck",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Legs",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Hind legs",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Biped",
+			"desc": "Efficient locomotion allows this organism to transverse easier."
+		},
+		{
+			"name": "Legs",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Quadruped",
+			"desc": "This creature uses 4 legs to move."
+		},
+		{
+			"name": "Ears",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Abdomen",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Forearms",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Wrists",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Thighs",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Shoulders",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Breasts",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Beak",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Feet",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Feathers",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Thick feathers",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Skin",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Fur",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Thick fur",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Fat stores",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Scales",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Strong scales",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Back fin",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Pectoral fins",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Streamlined body",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Gills",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Ovivaparous",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Live young",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Antibody protection",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Significant antibody protection",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Age of care",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Warm blooded",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Strong shell",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Shell",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Claws",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Sharp claws",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Aerodynamic",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Sweat",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Shivers",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Caecum",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Hindgut digestive tract",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Stomach acid",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Adaptive digestive system",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Strong stomach acid",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Carnivore digestive system",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Cartilage",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Bone skeletal network",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Strong bone skeletal network",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Horns",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Strong skull",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Antlers",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Fangs",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Poison glands",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Strong poison glands",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Poison adaptation",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Poison immunity",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Insect thorax",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Insect abdomen",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Insect",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Basic hive worker",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Hive worker",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Efficient hive worker",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Hive soldier",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Strong hive soldier",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Hive queen",
+			"desc": "This creature prefers a temperate climate."
+		},
+		{
+			"name": "Raise undead",
 			"desc": "This creature prefers a temperate climate."
 		}
 

@@ -16,6 +16,9 @@ class Interaction {
    ArrayList <Boolean> removeEffect;
    ArrayList<Trait> effect=new ArrayList();
    public int index;
+   public boolean temporary;
+   //This is how long a temporary interaction will last.
+   public float duration;
    //Useful for prioritising competing interactions. The lower the more likely to occur over other competing interactions
    // as specified by interaction manager. 
    //If the interaction's priority is higher than 10 it will not occur.
@@ -31,7 +34,7 @@ class Interaction {
    public Boolean isActive(Organism o) {
      
       for (int i=0; i<interactingTraits.size(); i++) {
-          if ((o.traits.contains(interactingTraits.get(i))&&traitAbsenceReq.get(i))||(!o.traits.contains(interactingTraits.get(i))&&!traitAbsenceReq.get(i))) {
+          if (((o.species.contains(interactingTraits.get(i))||o.temporaryStatuses.contains(interactingTraits.get(i)))&&traitAbsenceReq.get(i))||((!o.species.contains(interactingTraits.get(i))||o.temporaryStatuses.contains(interactingTraits.get(i)))&&!traitAbsenceReq.get(i))) {
               return false;
           }
       }
@@ -65,10 +68,12 @@ class Interaction {
    public void update(Organism o) {
       if (isActive(o)) {
          for (int i=0; i<effect.size(); i++) {
-              if (o.traits.contains(effect.get(i))&&!removeEffect.get(i)) {
-                   o.traits.add(effect.get(i)); 
-              } else if (!o.traits.contains(effect.get(i))&&removeEffect.get(i)) {
-                   o.traits.remove(effect.get(i)); 
+              if (!o.species.contains(effect.get(i))&&!removeEffect.get(i)&&!temporary) {
+                   o.addTrait(effect.get(i));
+              } else if (o.species.contains(effect.get(i))&&removeEffect.get(i)&&!temporary) {
+                   o.removeTrait(effect.get(i).name); 
+              } else if (!o.temporaryStatuses.contains(effect.get(i))&&!removeEffect.get(i)&&temporary) {
+                   o.addTraitTemp(effect.get(i),duration);
               }
          }
       }
@@ -92,32 +97,35 @@ class Interaction {
             JSONWHOLE=JSONWHOLE.concat(t+"\n");
         } 
         br.close();
-        JSONArray interactions = parseJSONArray("interactions");
+        JSONArray interactions = parseJSONArray(JSONWHOLE);
         
         JSONObject interaction = (JSONObject) interactions.get(index);
         name=interaction.getString("name");
         desc=interaction.getString("desc");
-        JSONArray interactionTraitReqs=(JSONArray) parseJSONArray("trait reqs");
-        String traitfilename=interaction.getString("trait file");
+        JSONArray interactionTraitReqs=(JSONArray) interaction.getJSONArray("trait reqs");
+        String traitfilename=interaction.getString("trait file","traits");
         priority=interaction.getInt("priority");
         activeProgram=interaction.getString("active");
         
         for (int i=0; i<interactionTraitReqs.size(); i++) {
-            String name=((JSONObject) interactionTraitReqs.get(i)).getString("trait name");
-            traitAbsenceReq.add(((JSONObject) interactionTraitReqs.get(i)).getBoolean("trait absence req"));
+            String name=((JSONObject) interactionTraitReqs.get(i)).getString("name");
+            traitAbsenceReq.add(((JSONObject) interactionTraitReqs.get(i)).getBoolean("absence req"));
             interactingTraits.add(getTraitByName(name,traitfilename));
         }
-        JSONArray effectTraits=(JSONArray) parseJSONArray("effects");
+        JSONArray effectTraits=(JSONArray) interaction.getJSONArray("effects");
         for (int i=0; i<effectTraits.size(); i++) {
-            String name=((JSONObject) effectTraits.get(i)).getString("trait name");
-            removeEffect.add(((JSONObject) effectTraits.get(i)).getBoolean("remove trait"));
+            String name=((JSONObject) effectTraits.get(i)).getString("name");
+            removeEffect.add(((JSONObject) effectTraits.get(i)).getBoolean("remove"));
             effect.add(getTraitByName(name,traitfilename));
         }
-        JSONArray paramReqs=(JSONArray) parseJSONArray("parameter reqs");
+        JSONArray paramReqs=(JSONArray) interaction.getJSONArray("parameter reqs");
         for (int i=0; i<paramReqs.size(); i++) {
             interactingParameters.add(((JSONObject) paramReqs.get(i)).getString("name"));
         }  
-
+        temporary=interaction.getBoolean("temporary");
+        if (temporary) {
+            duration=interaction.getInt("duration");
+        }
          } catch (Exception e) {
             e.printStackTrace(); 
            

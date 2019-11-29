@@ -14,10 +14,12 @@ class Trait {
     Boolean isEvolvable;
     int evoPointsCost;
     ArrayList<Trait> evoReqs=new ArrayList();
+    ArrayList<Boolean> include=new ArrayList();
     int period;
     public int priority;
     //active as in is it on
     public boolean activated=true;
+    public boolean isBodyPart=false;
     public int index;
     public String filename;
     ArrayList < Parameter> paramChanges=new ArrayList(); 
@@ -82,18 +84,19 @@ class Trait {
            desc= getStringJSON(trait, "desc_not_found", "desc");
            isEvolvable=getBooleanJSON(trait,false,"is evolvable");
            if (isEvolvable) {
-               evoPointsCost=getIntJSON(trait,0,"evo points cost");
+               evoPointsCost=getIntJSON(trait,0,"evo points");
                JSONArray evolutionReqs=trait.getJSONArray("evo requirements");
                for (int i=0; i<evolutionReqs.size(); i++) {
                     JSONObject evolutionReq=(JSONObject) evolutionReqs.get(i);
                     String evolutionReqName=evolutionReq.getString("name");
                     evoReqs.add(getTraitByName(evolutionReqName,"data\\traits"));
+                    include.add(evolutionReq.getBoolean("include"));
                }
            }
            activated=getBooleanJSON(trait,true,"active");
            Boolean hasPrograms=trait.getBoolean("has programs",false);
-           JSONArray programsArray=trait.getJSONArray("programs");
            if (hasPrograms) {
+              JSONArray programsArray=trait.getJSONArray("programs");
               for (int i=0; i<programsArray.size(); i++) {
                  JSONObject program=(JSONObject)programsArray.get(i);
                  programs.add(program.getString("name"));
@@ -105,14 +108,19 @@ class Trait {
               }
            }
            Boolean hasAbilities= getBooleanJSON(trait, false, "has abilities");
+           Boolean isBodyPart= getBooleanJSON(trait,false,"is body part");
+           if (isBodyPart) {
+               //Add more traits (on injury of body part)
+               
+           }  
            //This is the resulting scripted behavior for getting next target position.
-           JSONArray abilities=trait.getJSONArray("abilities");
            if (hasAbilities) {
-             for (int i=0; i<abilities.size(); i++) {
-                 JSONObject nextAbility= (JSONObject) abilities.get(i);
-                 String abilityName=nextAbility.getString("ability name");
-                 Ability a=getAbilityByName(abilityName,"data\\abilities");
-             }
+               JSONArray abilities=trait.getJSONArray("abilities");
+               for (int i=0; i<abilities.size(); i++) {
+                   JSONObject nextAbility= (JSONObject) abilities.get(i);
+                   String abilityName=nextAbility.getString("ability name");
+                   Ability a=getAbilityByName(abilityName,"data\\abilities");
+               }
            }
            //Parameter loading
            JSONArray parameters = (JSONArray) trait.getJSONArray("parameters");
@@ -327,11 +335,6 @@ class Parameter {
           if (hasMaxParameter) {
               JSONObject maxParameterDetails=(JSONObject)obj.get("max parameter");
               maxParameter=new Parameter(maxParameterDetails);
-          }
-          Boolean hasGui=obj.getBoolean("has gui",false);
-          if (hasGui) {
-              String displayLocation=obj.getString("gui location","file not found");
-              int displayIndex=obj.getInt("gui location index");
           }
     }
     void changeBy(Parameter p) {

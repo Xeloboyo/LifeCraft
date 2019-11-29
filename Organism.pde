@@ -156,11 +156,31 @@ class Organism extends GameEntity {
     
 }
 
-//remove later.
 static class OrganismManager {
    public static HashMap<String,ArrayList<Organism>> organisms=new HashMap();
    public static ArrayList<String> species;
    //Reckon implement a quadtree system for efficiency of getting nearest species etc.
+   public static void addOrganism(Organism o) {
+       if (species.contains(o.name)){
+           organisms.get(o.name).add(o);
+       } else {
+           addSpecies(o.name); 
+           organisms.get(o.name).add(o);
+       }
+   }
+   public static void addSpecies(String name) {
+       organisms.put(name,new ArrayList()); 
+   }
+   public static void removeOrganism(Organism o) {
+       organisms.get(o.name).remove(o);
+       //Extinction!
+       if (organisms.get(o.name).isEmpty()) {
+          organisms.remove(o.name); 
+       }
+   }
+   public static void initialise() {
+       //First of all, get all initial species in the game
+   }
    public static void update() {
      for (ArrayList<Organism> orgs: organisms.values())
      {

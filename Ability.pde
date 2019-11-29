@@ -10,6 +10,7 @@ class Ability {
     */
     String AOEType;
     float range;
+    float radius;
     float angleSize;
     //Used to determine how long the creature the ability will remain there.
     float abilityDuration;
@@ -20,6 +21,7 @@ class Ability {
     ArrayList<Float> durationOnSelf=new ArrayList();
     ArrayList<Float> durationOnOthers=new ArrayList();
     ArrayList<Organism> targetOrganisms=new ArrayList();
+    public String requirementsProgram;
     Organism caster;
     Ability (String filename, int index) {
         String JSONfile=getFile(filename);
@@ -34,9 +36,10 @@ class Ability {
         angleSize=ability.getFloat("angle size",0);
         AOE=ability.getBoolean("aoe",false);
         AOEType=ability.getString("aoe type","Circular");
-        refreshDuration=ability.getFloat("refresh duration",Float.MAX_VALUE);
+        radius=ability.getFloat("radius",0);
+        refreshDuration=ability.getFloat("refresh time",Float.MAX_VALUE);
         JSONArray selfEffects=ability.getJSONArray("self effects");
-        
+        requirementsProgram=ability.getString("requires");
         for (int i=0; i<selfEffects.size(); i++) {
             JSONObject effect=(JSONObject)(selfEffects.get(i));
             effectsOnSelf.add(effect.getString("name"));
@@ -100,6 +103,8 @@ class Ability {
     public float cooldown;
     //For self-casting and targetting
     public void cast(Organism o, ArrayList<Organism> targetOrganisms, float timeCast) {
+        //Requires program inputs the position of the organism and outputs a single boolean.
+         
         if ((time-timeCast)%refreshDuration==0) {
             for (int i=0; i<effectsOnSelf.size(); i++) {
                 o.addTraitTemp(getTraitByName(effectsOnSelf.get(i),"data\traits"),durationOnSelf.get(i));
@@ -109,18 +114,20 @@ class Ability {
                     org.addTraitTemp(getTraitByName(effectsOnOthers.get(i),"data\traits"),durationOnOthers.get(i));
                 }
             }
-            
+        } else {
+          
         }
         
     }   
     //For being castedUpon
+    //For casting in AOE
     public void castAOE(Organism o) {
         for (int i=0;i<effectsOnOthers.size(); i++) {
            o.addTraitTemp(getTraitByName(effectsOnOthers.get(i),"data\traits"),durationOnOthers.get(i)); 
         }
     }
-    //For casting in AOE
     public void cast(Organism o, float x, float y,float timeCast) {
+        
         if (!o.abilityCooldowns.containsKey(name)) {
             if (AOE) {
               //Continue with AOE application.
@@ -143,7 +150,7 @@ class Ability {
                       for (ArrayList<Organism> orgs: OrganismManager.organisms.values())
                        {
                          for (Organism organism: orgs) {
-                             if ((organism.x-x)*(organism.x-o.x)+(organism.y-y)*(organism.y-o.y)<=range*range) {
+                             if ((organism.x-x)*(organism.x-x)+(organism.y-y)*(organism.y-y)<=range*range) {
                                 castAOE(organism); 
                              }
                          }
@@ -152,6 +159,7 @@ class Ability {
             } else {
                cast(o,targetOrganisms,timeCast); 
             }
+            println("Ability "+name+" successfully cast by "+o.name+" at "+x+","+y+"!");
             if (time-timeCast>abilityDuration) {
                 o.abilityCooldowns.put(this.name,cooldown);
             }
