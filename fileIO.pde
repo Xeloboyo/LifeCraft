@@ -1,11 +1,15 @@
 import java.io.*;
 //Gets a program from a filename.
-String getFile(String filename) {
+String getFile(String filename,boolean JSON) {
     File f;
     BufferedReader pr;
     String WHOLE="";
     try {
-        f = new File(sysdir+""+filename+".txt");
+        if (!JSON) {
+            f = new File(sysdir+""+filename+".txt");
+        } else {
+            f = new File(sysdir+""+filename+".json");
+        }
          pr = new BufferedReader(new FileReader(f));
         String t;
         

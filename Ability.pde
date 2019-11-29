@@ -24,7 +24,7 @@ class Ability {
     public String requirementsProgram;
     Organism caster;
     Ability (String filename, int index) {
-        String JSONfile=getFile(filename);
+        String JSONfile=getFile(filename,true);
         JSONObject json=parseJSONObject(JSONfile);
         JSONArray abilities=json.getJSONArray("abilities");
         JSONObject ability=(JSONObject)abilities.get(index);

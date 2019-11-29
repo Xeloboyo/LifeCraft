@@ -158,7 +158,7 @@ class Trait {
        //All these programs will have an initial input of the organism parameters.
        for (int i=0; i<programs.size(); i++) {
            String progName=programs.get(i);  
-           String prog=getFile(progName);
+           String prog=getFile(progName,false);
            Program p=new Program(prog);
            //Since everything can be fetched from the position, only the position is necessary.
            injectVariable(new String[]{"x","y"},new String[]{(int)o.x+"",(int)o.y+""},p);
@@ -232,7 +232,7 @@ class Trait {
 }
 //This is loading. If already loaded, fetch from HashMap.
 public Trait getTraitByName(String name, String filename) {
-    String JSONWHOLE=getFile(filename);
+    String JSONWHOLE=getFile(filename,true);
     System.out.println(JSONWHOLE);
     JSONObject all = parseJSONObject(JSONWHOLE);
     JSONArray traiters = all.getJSONArray("traits");

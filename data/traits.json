@@ -835,8 +835,7 @@
 					"desc": "The change of energy for a creature over time. Changes once every 60 ticks. Influenced by a number of conditions, such as combat or injury. A severe lack of energy will lead to a decrease in health",
 					"data type": "Float",
 					"value": -0.05
-				}
-			]
+			}]
 		},
 		{
 			"name": "Developed self-repair mechanism",
@@ -895,11 +894,25 @@
 		},
 		{
 			"name": "Temperate preference",
-			"desc": "This creature prefers a temperate climate."
+			"desc": "This creature prefers a temperate climate.",
+			"has programs": true,
+			"programs": [{
+				"name": "data\\scripts\\temperatecheck",
+				"program role": "update Energy Regen"
+			}]
 		},
 		{
 			"name": "Cold preference",
-			"desc": "This creature prefers a cold climate."
+			"desc": "This creature prefers a cold climate.",
+			"has programs": true,
+			"programs": [{
+				"name": "data\\scripts\\coldcheck",
+				"program role": "update Energy Regen"
+			}]
+		},
+		{
+			"name": "Desert preference",
+			"desc": "This creature prefers a desert climate."
 		},
 		{
 			"name": "Head",

@@ -179,7 +179,7 @@ FunctionExecutor defaultFunctions = new FunctionExecutor(){
           }
           return params[0].split(params[1]);
         case "script":
-          String prog=getFile(params[0]);
+          String prog=getFile(params[0],false);
           Program p=new Program(prog);
           if (params.length%2==0) {
               return new String[]{"Incorrect number of arguments"};
@@ -369,7 +369,7 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
         //1st argument is filename
         //next (n-1)/2 arguments are variable names
         case "script":
-          String prog=getFile(params[0]);
+          String prog=getFile(params[0],false);
           Program p=new Program(prog);
           if (params.length%2==0) {
               return new String[]{"","error| Incorrect number of arguments|"};
@@ -401,8 +401,8 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
               return new String[]{"","| error in distanceToNearestOrganismFrom , position is not a vector of numbers|"};
           } 
           float[] closestO=new float[2];
-          for (int i=0; i<OrganismManager.species.size(); i++) {
-              for (Organism o: OrganismManager.organisms.get(OrganismManager.species.get(i))) {
+          for (int i=0; i<orgManager.species.size(); i++) {
+              for (Organism o: orgManager.organisms.get(orgManager.species.get(i))) {
                   //Latter is to not fetch own organism.
                  if (pow(closestO[0]-int(params[0]),2)+pow(closestO[1]-int(params[1]),2)>pow(o.x-int(params[0]),2)+pow(o.y-int(params[1]),2)
                  &&(pow(closestO[0]-int(params[0]),2)+pow(closestO[1]-int(params[1]),2)!=0||!boolean(params[2]))){
@@ -422,10 +422,10 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
           if (!isNumber(params[0])||!isNumber(params[1])) {
               return new String[]{"","| error in distanceToNearestOrganismFrom , position is not a vector of numbers|"};
           } 
-          closestO=new float[]{OrganismManager.organisms.get(OrganismManager.species.get(0)).get(0).x,OrganismManager.organisms.get(OrganismManager.species.get(0)).get(0).y};
-          String name=OrganismManager.species.get(0);
-          for (int i=0; i<OrganismManager.species.size(); i++) {
-              for (Organism o: OrganismManager.organisms.get(OrganismManager.species.get(i))) {
+          closestO=new float[]{orgManager.organisms.get(orgManager.species.get(0)).get(0).x,orgManager.organisms.get(orgManager.species.get(0)).get(0).y};
+          String name=orgManager.species.get(0);
+          for (int i=0; i<orgManager.species.size(); i++) {
+              for (Organism o: orgManager.organisms.get(orgManager.species.get(i))) {
                   //Latter after && is to not fetch own organism.
                  if (pow(closestO[0]-int(params[0]),2)+pow(closestO[1]-int(params[1]),2)>pow(o.x-int(params[0]),2)+pow(o.y-int(params[1]),2)
                  &&pow(closestO[0]-int(params[0]),2)+pow(closestO[1]-int(params[1]),2)!=0){
@@ -444,10 +444,10 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
           if (!isNumber(params[0])||!isNumber(params[1])) {
               return new String[]{"","| error in distanceToNearestOrganismFrom , position is not a vector of numbers|"};
           } 
-          closestO=new float[]{OrganismManager.organisms.get(OrganismManager.species.get(0)).get(0).x,OrganismManager.organisms.get(OrganismManager.species.get(0)).get(0).y};
-          name=OrganismManager.species.get(0);
-          for (int i=0; i<OrganismManager.species.size(); i++) {
-              for (Organism o: OrganismManager.organisms.get(OrganismManager.species.get(i))) {
+          closestO=new float[]{orgManager.organisms.get(orgManager.species.get(0)).get(0).x,orgManager.organisms.get(orgManager.species.get(0)).get(0).y};
+          name=orgManager.species.get(0);
+          for (int i=0; i<orgManager.species.size(); i++) {
+              for (Organism o: orgManager.organisms.get(orgManager.species.get(i))) {
                   //Latter after && is to not fetch own organism.
                  if (pow(closestO[0]-int(params[0]),2)+pow(closestO[1]-int(params[1]),2)>pow(o.x-int(params[0]),2)+pow(o.y-int(params[1]),2)
                  &&pow(closestO[0]-int(params[0]),2)+pow(closestO[1]-int(params[1]),2)!=0){
@@ -470,11 +470,11 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
           if (!isNumber(params[0])||!isNumber(params[1])) {
               return new String[]{"","| error in distanceToNearestNamedOrganismFrom , position is not a vector of numbers|"};
           } 
-          if (!OrganismManager.species.contains(params[2])) {
+          if (!orgManager.species.contains(params[2])) {
              return new String[]{"","| error in distanceToNearestNamedOrganismFrom , species not recognised|"};
           }
-          float[] closest={OrganismManager.organisms.get(params[2]).get(0).x,OrganismManager.organisms.get(params[2]).get(0).y};
-          for (Organism o: OrganismManager.organisms.get(params[2])) {
+          float[] closest={orgManager.organisms.get(params[2]).get(0).x,orgManager.organisms.get(params[2]).get(0).y};
+          for (Organism o: orgManager.organisms.get(params[2])) {
              if (pow(closest[0]-int(params[0]),2)+pow(closest[1]-int(params[1]),2)>pow(o.x-int(params[0]),2)+pow(o.y-int(params[1]),2)){
                  closest[0]=o.x;
                  closest[1]=o.y;
@@ -494,11 +494,11 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
           if (!isNumber(params[0])||!isNumber(params[1])) {
               return new String[]{"","| error in distanceToNearestNamedOrganismFrom , position is not a vector of numbers|"};
           } 
-          if (!OrganismManager.species.contains(params[2])) {
+          if (!orgManager.species.contains(params[2])) {
              return new String[]{"","| error in distanceToNearestNamedOrganismFrom , species not recognised|"};
           }
-          float[]closestCreature={OrganismManager.organisms.get(params[2]).get(0).x,OrganismManager.organisms.get(params[2]).get(0).y};
-          for (Organism o: OrganismManager.organisms.get(params[2])) {
+          float[]closestCreature={orgManager.organisms.get(params[2]).get(0).x,orgManager.organisms.get(params[2]).get(0).y};
+          for (Organism o: orgManager.organisms.get(params[2])) {
              if (pow(closestCreature[0]-int(params[0]),2)+pow(closestCreature[1]-int(params[1]),2)>pow(o.x-int(params[0]),2)+pow(o.y-int(params[1]),2)){
                  closestCreature[0]=o.x;
                  closestCreature[1]=o.y;
@@ -519,13 +519,13 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
           if (!isNumber(params[0])||!isNumber(params[1])) {
               return new String[]{"","| error in distanceToNearestNamedOrganismFrom , positions are not numbers|"};
           } 
-          if (!OrganismManager.species.contains(params[2])) {
+          if (!orgManager.species.contains(params[2])) {
              return new String[]{"","| error in distanceToNearestNamedOrganismFrom , species not recognised|"};
           }
           if (!isNumber(params[3])) {
              return new String[]{"","| error in distanceToNearestNamedOrganismFrom , range is not number!|"};
           }
-          for (Organism o: OrganismManager.organisms.get(params[2])) {
+          for (Organism o: orgManager.organisms.get(params[2])) {
              if (pow(o.x-int(params[0]),2)+pow(o.y-int(params[1]),2)<int(params[3])){
                returnValues.add("["+o.x+","+o.y+","+o.velX+","+o.velY+"],");
              }
@@ -550,8 +550,8 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
           if (!isNumber(params[2])) {
              return new String[]{"","| error in distanceToNearestNamedOrganismFrom , range is not number!|"};
           }
-          for (int i=0; i<OrganismManager.species.size(); i++) {
-              for (Organism o: OrganismManager.organisms.get(OrganismManager.species.get(i))) {
+          for (int i=0; i<orgManager.species.size(); i++) {
+              for (Organism o: orgManager.organisms.get(orgManager.species.get(i))) {
                  if (pow(o.x-int(params[0]),2)+pow(o.y-int(params[1]),2)<int(params[2])){
                      returnValues.add("["+o.x+","+o.y+","+o.velX+","+o.velY+","+o.name+"]");
                  }
@@ -577,10 +577,10 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
         //Argument 1=species
         //Argument 2=name of trait
         case "hasTrait":
-          if (!OrganismManager.species.contains(params[0])) {
+          if (!orgManager.species.contains(params[0])) {
              return new String[]{"","| error in distanceToNearestNamedOrganismFrom , species not recognised|"};
           }
-          if (!OrganismManager.organisms.get(params[0]).get(0).species.contains(params[1])){
+          if (!orgManager.organisms.get(params[0]).get(0).species.contains(params[1])){
               return new String[]{"\"false\"",""};
           }
           return new String[]{"\"true\"",""};
@@ -596,11 +596,11 @@ FunctionExecutor gameFunctions = new FunctionExecutor(){
           if (!isNumber(params[0])||!isNumber(params[1])) {
               return new String[]{"","| error in distanceToNearestOrganismFrom , position is not a vector of numbers|"};
           } 
-          closestO=new float[]{OrganismManager.organisms.get(OrganismManager.species.get(0)).get(0).x,OrganismManager.organisms.get(OrganismManager.species.get(0)).get(0).y};
-          name=OrganismManager.species.get(0);
-          Organism get=OrganismManager.organisms.get(OrganismManager.species.get(0)).get(0);
-          for (int i=0; i<OrganismManager.species.size(); i++) {
-              for (Organism o: OrganismManager.organisms.get(OrganismManager.species.get(i))) {
+          closestO=new float[]{orgManager.organisms.get(orgManager.species.get(0)).get(0).x,orgManager.organisms.get(orgManager.species.get(0)).get(0).y};
+          name=orgManager.species.get(0);
+          Organism get=orgManager.organisms.get(orgManager.species.get(0)).get(0);
+          for (int i=0; i<orgManager.species.size(); i++) {
+              for (Organism o: orgManager.organisms.get(orgManager.species.get(i))) {
                   //Latter after && is to not fetch own organism.
                  if (pow(closestO[0]-int(params[0]),2)+pow(closestO[1]-int(params[1]),2)>pow(o.x-int(params[0]),2)+pow(o.y-int(params[1]),2)){
                      closestO[0]=o.x;
