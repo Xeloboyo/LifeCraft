@@ -5,8 +5,9 @@ float toal = 0.0,toal2=0.0;
 PImage output;
 PeasyCam p;
 SpriteBatch tileBatch;
+OrganismManager orgManager;
 void setup(){
-  
+  orgManager=new OrganismManager();
   sysdir=sketchPath("\\");
   initialiseGUI();
   Trait alive=new Trait("data\\traits",0);

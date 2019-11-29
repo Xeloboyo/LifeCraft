@@ -165,7 +165,6 @@ class OrganismManager extends EntityEventInterceptor{
    }
    
    
-   //Reckon implement a quadtree system for efficiency of getting nearest species etc.
    public boolean onAdd(GameEntity oo) {
        if(!(oo instanceof Organism)){
          return true;

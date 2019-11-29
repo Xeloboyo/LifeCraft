@@ -108,11 +108,7 @@ class Trait {
               }
            }
            Boolean hasAbilities= getBooleanJSON(trait, false, "has abilities");
-           Boolean isBodyPart= getBooleanJSON(trait,false,"is body part");
-           if (isBodyPart) {
-               //Add more traits (on injury of body part)
-               
-           }  
+           isBodyPart= getBooleanJSON(trait,false,"is body part");
            //This is the resulting scripted behavior for getting next target position.
            if (hasAbilities) {
                JSONArray abilities=trait.getJSONArray("abilities");

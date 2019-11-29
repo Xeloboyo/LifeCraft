@@ -138,7 +138,7 @@ class Ability {
                      //Origin of cone
                      origin[0]=o.x+2*cos(angleOfCast);
                      origin[1]=o.y+2*sin(angleOfCast);
-                     for (ArrayList<Organism> orgs: OrganismManager.organisms.values())
+                     for (ArrayList<Organism> orgs: orgManager.organisms.values())
                      {
                        for (Organism organism: orgs) {
                            if (isInCone(origin[0],origin[1],organism.x,organism.y,range,angleOfCast,angleSize)&&(time-timeCast)%refreshDuration==0) {
@@ -147,7 +147,7 @@ class Ability {
                        }
                      }
                   } else {
-                      for (ArrayList<Organism> orgs: OrganismManager.organisms.values())
+                      for (ArrayList<Organism> orgs: orgManager.organisms.values())
                        {
                          for (Organism organism: orgs) {
                              if ((organism.x-x)*(organism.x-x)+(organism.y-y)*(organism.y-y)<=range*range) {
