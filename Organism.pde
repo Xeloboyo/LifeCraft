@@ -156,39 +156,44 @@ class Organism extends GameEntity {
     
 }
 
-static class OrganismManager {
-   public static HashMap<String,ArrayList<Organism>> organisms=new HashMap();
-   public static ArrayList<String> species;
+class OrganismManager extends EntityEventInterceptor{
+   public HashMap<String,ArrayList<Organism>> organisms=new HashMap();
+   public ArrayList<String> species;
+   
+   OrganismManager(){
+     initialise();
+   }
+   
+   
    //Reckon implement a quadtree system for efficiency of getting nearest species etc.
-   public static void addOrganism(Organism o) {
+   public boolean onAdd(GameEntity oo) {
+       if(!(oo instanceof Organism)){
+         return true;
+       }
+       Organism o = (Organism)oo;
        if (species.contains(o.name)){
            organisms.get(o.name).add(o);
        } else {
-           addSpecies(o.name); 
+           species.add(o.name); 
            organisms.get(o.name).add(o);
        }
+       return true;
    }
-   public static void addSpecies(String name) {
-       organisms.put(name,new ArrayList()); 
+   public boolean onRemove(GameEntity oo) {
+     if(!(oo instanceof Organism)){
+       return true;
+     }
+     Organism o = (Organism)oo;
+     organisms.get(o.name).remove(o);
+     //Extinction!
+     if (organisms.get(o.name).isEmpty()) {
+        organisms.remove(o.name); 
+     }
+     return true;
    }
-   public static void removeOrganism(Organism o) {
-       organisms.get(o.name).remove(o);
-       //Extinction!
-       if (organisms.get(o.name).isEmpty()) {
-          organisms.remove(o.name); 
-       }
-   }
-   public static void initialise() {
+   public void initialise() {
+     species = new ArrayList();
        //First of all, get all initial species in the game
    }
-   public static void update() {
-     for (ArrayList<Organism> orgs: organisms.values())
-     {
-       for (Organism o: orgs) {
-          //Update
-          o.update();
-          o.draw();
-       }
-     }
-   }
+   
 }
