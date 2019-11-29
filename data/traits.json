@@ -912,35 +912,91 @@
 		},
 		{
 			"name": "Desert preference",
-			"desc": "This creature prefers a desert climate."
+			"desc": "This creature prefers a desert climate.",
+			"has programs": true,
+			"programs": [{
+				"name": "data\\scripts\\desertcheck",
+				"program role": "update Energy Regen"
+			}]
 		},
 		{
 			"name": "Head",
-			"desc": "This creature prefers a temperate climate."
+			"desc": "This creature has a head, as all creatures do. 
+				Injury to this vital component will severely hamper life expectancy.",
+			"has programs": true,
+			"parameters": [{
+				"name": "run thoughts",
+				"desc": "If this is false, the brain is too damaged to process movement and allow for normal bodily functions.",
+				"data type": "Boolean",
+				"has update parameter": false,
+				"has max parameter": false,
+				"value": true
+			}]
 		},
 		{
 			"name": "Eye",
-			"desc": "This creature prefers a temperate climate."
+			"desc": "Allows for vision and thus for tracking movement",
+			"parameters": [{
+				"name": "has vision",
+				"desc": "If this is false, the function for returning organisms with movement will come back with nothing.",
+				"data type": "Boolean",
+				"value": true
+			}]
 		},
 		{
 			"name": "Nose",
-			"desc": "This creature prefers a temperate climate."
+			"desc": "Allows for detection of nearby food and detect if it is good to eat.",
+			"parameters": [{
+				"name": "has nose",
+				"desc": "If this is false, cannot detect if food will infect.",
+				"data type": "Boolean",
+				"value": true	
+			}],
+		},
+		{
+			"name": "Strong nose",
+			"desc": "Allows for better detection of nearby food and detect if it is good to eat, including whether it is poisonous.",
+			"is evolvable": true,
+			"evo points": 300,
+			"evo requirements": [{ 
+				"name": "Nose",
+				"include": true
+				
+			}]
+			"parameters": [{
+				"name": "has strong nose",
+				"desc": "If this is false, is unable to detect if food will infect or poisonous.",
+				"data type": "Boolean",
+				"value": true
+			}],
 		},
 		{
 			"name": "Mouth",
-			"desc": "This creature prefers a temperate climate."
+			"desc": "Gives the creature the ability to eat dead organisms (if carnivorous/omnivorous) or plants (if omnivorous/herbivorous)",
+			"has abilities": true,
+			"abilities": [{
+				"name": "Eat"
+			}]
 		},
 		{
 			"name": "Mandible",
-			"desc": "This creature prefers a temperate climate."
+			"desc": "Not only does this apparatus allow very small organisms to eat, but also bite others with significant force. Only availabe for very small organisms."
+			"has abilities": true,
+			"abilities": [{
+				"name": "Eat",
+			},
+			{
+				"name": "Mandible bite"	
+			}]
 		},
 		{
 			"name": "Neck",
-			"desc": "This creature prefers a temperate climate."
+			"desc": "This part of the body connects the head to the rest of the body. Injury may result in a swift death."
 		},
 		{
 			"name": "Legs",
-			"desc": "This creature prefers a temperate climate."
+			"desc": "Allow the creature to move around the map on land.",
+			
 		},
 		{
 			"name": "Hind legs",
