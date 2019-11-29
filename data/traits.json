@@ -605,6 +605,7 @@
 			"desc": "This creature is able to breathe in water. Suitable for Large, Medium and Small creatures.",
 			"is evolvable": true,
 			"evo points": 200,
+			"is body part": true,
 			"evo requirements":[
 			{
 				"name": "Very small",
@@ -654,6 +655,7 @@
 			"desc": "This creature has lungs and through this is able to breathe in air.",
 			"is evolvable": true,
 			"evo points": 200,
+			"is body part": true,
 			"evo requirements":[{
 				"name": "Very small",
 				"include": false
@@ -923,6 +925,7 @@
 			"name": "Head",
 			"desc": "This creature has a head, as all creatures do. 
 				Injury to this vital component will severely hamper life expectancy.",
+			"is body part": true,
 			"has programs": true,
 			"parameters": [{
 				"name": "run thoughts",
@@ -936,6 +939,7 @@
 		{
 			"name": "Eye",
 			"desc": "Allows for vision and thus for tracking movement",
+			"is body part": true,
 			"parameters": [{
 				"name": "has vision",
 				"desc": "If this is false, the function for returning organisms with movement will come back with nothing.",
@@ -946,6 +950,7 @@
 		{
 			"name": "Nose",
 			"desc": "Allows for detection of nearby food and detect if it is good to eat.",
+			"is body part": true,
 			"parameters": [{
 				"name": "has nose",
 				"desc": "If this is false, cannot detect if food will infect.",
@@ -956,6 +961,7 @@
 		{
 			"name": "Strong nose",
 			"desc": "Allows for better detection of nearby food and detect if it is good to eat, including whether it is poisonous.",
+			"is body part": true,
 			"is evolvable": true,
 			"evo points": 300,
 			"evo requirements": [{ 
@@ -973,6 +979,7 @@
 		{
 			"name": "Mouth",
 			"desc": "Gives the creature the ability to eat dead organisms (if carnivorous/omnivorous) or plants (if omnivorous/herbivorous)",
+			"is body part": true,
 			"has abilities": true,
 			"abilities": [{
 				"name": "Eat"
@@ -981,6 +988,7 @@
 		{
 			"name": "Mandible",
 			"desc": "Not only does this apparatus allow very small organisms to eat, but also bite others with significant force. Only availabe for very small organisms."
+			"is body part": true,
 			"has abilities": true,
 			"abilities": [{
 				"name": "Eat",
@@ -991,32 +999,51 @@
 		},
 		{
 			"name": "Neck",
+			"is body part": true,
 			"desc": "This part of the body connects the head to the rest of the body. Injury may result in a swift death."
 		},
 		{
 			"name": "Legs",
 			"desc": "Allow the creature to move around the map on land.",
+			"is body part": true,
+			"parameters": [{
+				"name": "Movement Speed",
+				"data type": "Float",
+				"value": 1
+			}]
 			
 		},
 		{
 			"name": "Hind legs",
-			"desc": "This creature prefers a temperate climate."
+			"desc": "Allows the organism to temporarily quickly sprint across terrain, but at significant energy cost. Also increases movement speed.",
+			"is body part": true,
+			"parameters": [{
+				"name": "Movement Speed",
+				"data type": "Float",
+				"value":0.5
+			
+			}],
+			"has abilities": true,
+			"abilities": [{
+				"Sprint"
+			}]
 		},
 		{
 			"name": "Biped",
-			"desc": "Efficient locomotion allows this organism to transverse easier."
-		},
-		{
-			"name": "Legs",
-			"desc": "This creature prefers a temperate climate."
+			"desc": "Efficient locomotion allows this organism to transverse with reduced energy cost.",
+			"parameters": [{
+				"name": "Energy Regen",
+				"data type": "Float",
+				"value":0.1
+			}]
 		},
 		{
 			"name": "Quadruped",
-			"desc": "This creature uses 4 legs to move."
-		},
-		{
-			"name": "Ears",
-			"desc": "This creature prefers a temperate climate."
+			"desc": "This creature uses 4 legs to move, allowing to rear up and potentially crush significantly smaller enemies",
+			"has abilities": true,
+			"abilities": [{
+				"name": "Crush"
+			}]
 		},
 		{
 			"name": "Abdomen",
@@ -1092,10 +1119,6 @@
 		},
 		{
 			"name": "Streamlined body",
-			"desc": "This creature prefers a temperate climate."
-		},
-		{
-			"name": "Gills",
 			"desc": "This creature prefers a temperate climate."
 		},
 		{
@@ -1256,7 +1279,11 @@
 		},
 		{
 			"name": "Raise undead",
-			"desc": "This creature prefers a temperate climate."
+			"desc": "Allows the undead to resurrect their new colleagues at the cost of some of their own energy."
+			"has abilities": true,
+			"abilities": [{
+				"name": "Raise undead"
+			}]
 		}
 
 	]
